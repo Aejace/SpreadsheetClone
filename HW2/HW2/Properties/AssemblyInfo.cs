@@ -1,5 +1,5 @@
-﻿// <copyright file="AssemblyInfo.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
+﻿// <copyright file="AssemblyInfo.cs" company="Arlo Jones 011778052">
+// Copyright (c) Arlo Jones 011778052. All rights reserved.
 // </copyright>
 
 using System.Reflection;

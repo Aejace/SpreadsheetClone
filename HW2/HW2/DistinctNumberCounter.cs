@@ -24,6 +24,11 @@ namespace HW2
         public string HashSetMethod(List<int> randomInts)
         {
             HashSet<int> distinctNumberHashSet = new HashSet<int>();
+            foreach (int element in randomInts)
+            {
+                distinctNumberHashSet.Add(element);
+            }
+
             return distinctNumberHashSet.Count.ToString();
         }
 
@@ -37,7 +42,35 @@ namespace HW2
         /// <returns> Count of distinct numbers returned as a string. </returns>
         public string ConstantStorageMethod(List<int> randomInts)
         {
-            int count = default(int);
+            int count = 0;
+            bool uniqueFlag = true;
+
+            if (randomInts.Count > 0)
+            {
+                ++count;
+            }
+
+            if (randomInts.Count > 1)
+            {
+                for (int i = 1; i < randomInts.Count; ++i)
+                {
+                    for (int j = 0; j < i; ++j)
+                    {
+                        if (randomInts.ElementAt(i) == randomInts.ElementAt(j))
+                        {
+                            uniqueFlag = false;
+                        }
+                    }
+
+                    if (uniqueFlag == true)
+                    {
+                        ++count;
+                    }
+
+                    uniqueFlag = true;
+                }
+            }
+
             return count.ToString();
         }
 
@@ -52,7 +85,24 @@ namespace HW2
         /// <returns> Count of distinct numbers returned as a string. </returns>
         public string SortedMethod(List<int> randomInts)
         {
-            int count = default(int);
+            int count = 0;
+            randomInts.Sort();
+            if (randomInts.Count > 0)
+            {
+                ++count;
+            }
+
+            if (randomInts.Count > 1)
+            {
+                for (int i = 1; i < randomInts.Count; ++i)
+                {
+                    if (randomInts.ElementAt(i) != randomInts.ElementAt(i - 1))
+                    {
+                        ++count;
+                    }
+                }
+            }
+
             return count.ToString();
         }
     }

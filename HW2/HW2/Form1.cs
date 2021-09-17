@@ -52,15 +52,18 @@ namespace HW2
             outputStringForTextBox1 = "HashSet Method: ";
             outputStringForTextBox1 += distinctNumberCounter.HashSetMethod(tenKRandomInts);
             outputStringForTextBox1 += " unique numbers \r\n";
-            outputStringForTextBox1 += "Explination about time and space complexity \r\n \r\n";
+            outputStringForTextBox1 += "The time complexity of this method is O(N) because it has a one to one porportionality with the size of the data set used. \r\n";
+            outputStringForTextBox1 += "Each element in the list is only accessed once to find the result. \r\n \r\n";
             outputStringForTextBox1 += "O(1) Storage Method: ";
             outputStringForTextBox1 += distinctNumberCounter.ConstantStorageMethod(tenKRandomInts);
             outputStringForTextBox1 += " unique numbers \r\n";
-            outputStringForTextBox1 += "Explination about time and space complexity \r\n \r\n";
+            outputStringForTextBox1 += "The time complexity of this method is O(N^2) because the method contains nested loops. \r\n";
+            outputStringForTextBox1 += "For every element in the list, all other elements need to be checked to verify it's uniqueness. \r\n \r\n";
             outputStringForTextBox1 += "Sorted Method: ";
             outputStringForTextBox1 += distinctNumberCounter.SortedMethod(tenKRandomInts);
             outputStringForTextBox1 += " unique numbers \r\n";
-            outputStringForTextBox1 += "Explination about time and space complexity \r\n \r\n";
+            outputStringForTextBox1 += "The time complexity of this method is O(N) because it has a constant porportionality with the size of the data set. \r\n";
+            outputStringForTextBox1 += "Each element in the list is accessed twice. \r\n \r\n";
 
             // output string to textBox1
             this.textBox1.Text = outputStringForTextBox1;
