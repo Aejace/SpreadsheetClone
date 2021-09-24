@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HW3", "HW3\HW3.csproj", "{8B743604-7B4C-4851-8664-0A67776F6F54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaveAndLoadTests", "SaveAndLoadTests\SaveAndLoadTests.csproj", "{A4EC58E7-9AC9-4D82-B671-78767CD35487}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoadTests", "SaveAndLoadTests\LoadTests.csproj", "{A4EC58E7-9AC9-4D82-B671-78767CD35487}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

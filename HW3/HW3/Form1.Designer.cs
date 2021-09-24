@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace HW3
 {
     partial class Form1
@@ -69,7 +71,7 @@ namespace HW3
             this.fibonacci50ToolStripMenuItem,
             this.fibonacci100ToolStripMenuItem});
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.loadToolStripMenuItem.Text = "Load";
             // 
             // fromFileToolStripMenuItem
@@ -96,20 +98,20 @@ namespace HW3
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(97, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(177, 6);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toFileToolStripMenuItem});
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.saveToolStripMenuItem.Text = "Save";
             // 
             // toFileToolStripMenuItem
             // 
             this.toFileToolStripMenuItem.Name = "toFileToolStripMenuItem";
-            this.toFileToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.toFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.toFileToolStripMenuItem.Text = "To File";
             this.toFileToolStripMenuItem.Click += new System.EventHandler(this.ToFileToolStripMenuItem_Click);
             // 
@@ -122,6 +124,7 @@ namespace HW3
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox1.Size = new System.Drawing.Size(800, 426);
             this.textBox1.TabIndex = 1;
+            this.textBox1.TextChanged += new System.EventHandler(this.TextBox1_TextChanged);
             // 
             // Form1
             // 
