@@ -40,7 +40,7 @@ namespace HW3
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.mainTextBox = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -71,7 +71,7 @@ namespace HW3
             this.fibonacci50ToolStripMenuItem,
             this.fibonacci100ToolStripMenuItem});
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.loadToolStripMenuItem.Text = "Load";
             // 
             // fromFileToolStripMenuItem
@@ -98,40 +98,40 @@ namespace HW3
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(97, 6);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toFileToolStripMenuItem});
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
             this.saveToolStripMenuItem.Text = "Save";
             // 
             // toFileToolStripMenuItem
             // 
             this.toFileToolStripMenuItem.Name = "toFileToolStripMenuItem";
-            this.toFileToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.toFileToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.toFileToolStripMenuItem.Text = "To File";
             this.toFileToolStripMenuItem.Click += new System.EventHandler(this.ToFileToolStripMenuItem_Click);
             // 
-            // textBox1
+            // mainTextBox
             // 
-            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox1.Location = new System.Drawing.Point(0, 24);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox1.Size = new System.Drawing.Size(800, 426);
-            this.textBox1.TabIndex = 1;
-            this.textBox1.TextChanged += new System.EventHandler(this.TextBox1_TextChanged);
+            this.mainTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mainTextBox.Location = new System.Drawing.Point(0, 24);
+            this.mainTextBox.Multiline = true;
+            this.mainTextBox.Name = "mainTextBox";
+            this.mainTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.mainTextBox.Size = new System.Drawing.Size(800, 426);
+            this.mainTextBox.TabIndex = 1;
+            this.mainTextBox.TextChanged += new System.EventHandler(this.MainTextBox_TextChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.mainTextBox);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
@@ -155,7 +155,7 @@ namespace HW3
         private System.Windows.Forms.ToolStripMenuItem fromFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox mainTextBox;
     }
 }
 
