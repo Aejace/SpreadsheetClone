@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spreadsheet_Arlo_Jones”", "Spreadsheet_Arlo_Jones”\Spreadsheet_Arlo_Jones”.csproj", "{5EB12122-CC26-4F10-B8FC-EE38DA9006A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadSheetTests", "SpreadSheetTests\SpreadSheetTests.csproj", "{A96DB033-E346-400E-8E68-5661D9F178FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpreadSheetTests", "SpreadSheetTests\SpreadSheetTests.csproj", "{A96DB033-E346-400E-8E68-5661D9F178FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadSheetEngine", "SpreadSheetEngine\SpreadSheetEngine.csproj", "{3D4B3F23-BF18-4677-B908-03F11B4A8613}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{A96DB033-E346-400E-8E68-5661D9F178FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A96DB033-E346-400E-8E68-5661D9F178FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A96DB033-E346-400E-8E68-5661D9F178FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D4B3F23-BF18-4677-B908-03F11B4A8613}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D4B3F23-BF18-4677-B908-03F11B4A8613}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D4B3F23-BF18-4677-B908-03F11B4A8613}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D4B3F23-BF18-4677-B908-03F11B4A8613}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
