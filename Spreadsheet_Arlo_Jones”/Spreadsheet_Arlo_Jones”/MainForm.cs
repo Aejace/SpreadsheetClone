@@ -1,4 +1,4 @@
-﻿// <copyright file="Form1.cs" company="Arlo Jones">
+﻿// <copyright file="MainForm.cs" company="Arlo Jones">
 // Copyright (c) { Aejace studios }. All rights reserved.
 // </copyright>
 

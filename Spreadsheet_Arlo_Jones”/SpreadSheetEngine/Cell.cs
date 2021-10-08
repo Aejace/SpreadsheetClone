@@ -8,12 +8,34 @@ namespace Cpts321
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
+    /// <summary>
+    /// .
+    /// </summary>
     public abstract class Cell : INotifyPropertyChanged
     {
+        /// <summary>
+        /// The text that is typed into a cell.
+        /// </summary>
+        protected private string text;
+
+        /// <summary>
+        /// The evaluated value of a cell. Will be displayed in the UI.
+        /// </summary>
+        private protected string value;
+
+        /// <summary>
+        /// The row number of a cell.
+        /// </summary>
         private readonly int rowIndexNumber;
+
+        /// <summary>
+        /// The column number of a cell.
+        /// </summary>
         private readonly int columnIndexNumber;
-        protected string text;
-        protected string value;
+
+        
+
+       
 
         public Cell(int rowNum, int columnNum)
         {
@@ -21,6 +43,9 @@ namespace Cpts321
             this.columnIndexNumber = columnNum;
         }
 
+        /// <summary>
+        /// .
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         public string Text
