@@ -42,7 +42,7 @@ namespace Spreadsheet_Arlo_Jones_
             for (int rowNumber = 0; rowNumber < 50; ++rowNumber)
             {
                 this.MainDataGridView.Rows.Add();
-                this.MainDataGridView.Rows[rowNumber].HeaderCell.Value = "Row " + rowNumber;
+                this.MainDataGridView.Rows[rowNumber].HeaderCell.Value = rowNumber.ToString();
             }
 
             this.MainDataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
