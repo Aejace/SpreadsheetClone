@@ -99,7 +99,12 @@ namespace Cpts321
             {
                 if (cellWhosePropertyChanged.Text.StartsWith("="))
                 {
-
+                    int columnIndex = cellWhosePropertyChanged.Text.ElementAt(1) - 65;
+                    string rowIndex = string.Empty;
+                    for (int i = 2; i < cellWhosePropertyChanged.Text.Count(); ++i)
+                    {
+                        rowIndex += cellWhosePropertyChanged.Text.ElementAt(i);
+                    } 
                 }
                 else
                 {
