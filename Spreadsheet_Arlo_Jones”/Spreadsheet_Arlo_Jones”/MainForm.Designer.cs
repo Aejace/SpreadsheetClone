@@ -33,6 +33,7 @@ namespace Spreadsheet_Arlo_Jones_
         private void InitializeComponent()
         {
             this.MainDataGridView = new System.Windows.Forms.DataGridView();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.MainDataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -47,12 +48,24 @@ namespace Spreadsheet_Arlo_Jones_
             this.MainDataGridView.Size = new System.Drawing.Size(800, 450);
             this.MainDataGridView.TabIndex = 0;
             this.MainDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.MainDataGridView_CellContentClick);
+            this.MainDataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.MainDataGridView_CellEndEdit);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(725, 0);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "Demo";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.MainDataGridView);
             this.Name = "MainForm";
             this.Text = "Spreadsheet (Arlo Jones)";
@@ -70,6 +83,7 @@ namespace Spreadsheet_Arlo_Jones_
         #endregion
 
         private System.Windows.Forms.DataGridView MainDataGridView;
+        private Button button1;
     }
 }
 

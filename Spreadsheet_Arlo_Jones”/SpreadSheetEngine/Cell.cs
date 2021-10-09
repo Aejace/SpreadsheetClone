@@ -9,7 +9,9 @@ namespace Cpts321
     using System.Runtime.CompilerServices;
 
     /// <summary>
-    /// .
+    /// Abstract Cell Class, contains the index values for the row and
+    /// column of a cell, as well as its value, and a "Text" property
+    /// representing what is typed into the cell.
     /// </summary>
     public abstract class Cell : INotifyPropertyChanged
     {
@@ -26,7 +28,7 @@ namespace Cpts321
         /// <summary>
         /// The text that is typed into a cell.
         /// </summary>
-        private string text;
+        private string text = string.Empty;
 
         /// <summary>
         /// The evaluated value of a cell. Will be displayed in the UI.
@@ -100,7 +102,7 @@ namespace Cpts321
         /// <summary>
         /// Gets rowIndexNumber.
         /// </summary>
-        public int GetRowIndexNumber
+        public int RowIndexNumber
         {
             get
             {

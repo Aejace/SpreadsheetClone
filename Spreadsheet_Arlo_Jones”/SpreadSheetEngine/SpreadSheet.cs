@@ -104,7 +104,9 @@ namespace Cpts321
                     for (int i = 2; i < cellWhosePropertyChanged.Text.Count(); ++i)
                     {
                         rowIndex += cellWhosePropertyChanged.Text.ElementAt(i);
-                    } 
+                    }
+
+                    cellWhosePropertyChanged.Value = this.cellArray[int.Parse(rowIndex), columnIndex].Value;
                 }
                 else
                 {

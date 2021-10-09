@@ -13,6 +13,7 @@ namespace Spreadsheet_Arlo_Jones_
     using System.Text;
     using System.Threading.Tasks;
     using System.Windows.Forms;
+    using Cpts321;
 
     /// <summary>
     /// Partial class definition of MainForm, allows new fields and methods to be added to the class.
@@ -20,11 +21,17 @@ namespace Spreadsheet_Arlo_Jones_
     public partial class MainForm : Form
     {
         /// <summary>
+        /// SpreadSheet.
+        /// </summary>
+        private SpreadSheet MainSpreadSheet;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="MainForm"/> class.
         /// </summary>
         public MainForm()
         {
             this.InitializeComponent();
+            this.MainSpreadSheet = new SpreadSheet(50, 26);
         }
 
         /// <summary>
@@ -46,6 +53,51 @@ namespace Spreadsheet_Arlo_Jones_
             }
 
             this.MainDataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
+
+            this.MainSpreadSheet.CellPropertyChanged += new PropertyChangedEventHandler(SpreadSheetChangedEventHandler);
+
+            void SpreadSheetChangedEventHandler(object cellSender, PropertyChangedEventArgs cellValue)
+            {
+                Cell cellWhosePropertyChanged = cellSender as Cell;
+                int rowName = cellWhosePropertyChanged.RowIndexNumber;
+                int columnName = cellWhosePropertyChanged.ColumnIndexNumber;
+                this.MainDataGridView.Rows[rowName].Cells[columnName].Value = cellWhosePropertyChanged.Value;
+            }
+        }
+
+        /// <summary>
+        /// Updates the appropriate cell's text in the spreadsheet.
+        /// </summary>
+        /// <param name="sender"> A data grid view cell. </param>
+        /// <param name="e"> Contains the row and column index of the sender call. </param>
+        private void MainDataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            DataGridViewCell cellThatsTextChanged = this.MainDataGridView.CurrentCell;
+            this.MainSpreadSheet.GetCell(e.RowIndex, e.ColumnIndex).Text = cellThatsTextChanged.Value.ToString();
+        }
+
+        /// <summary>
+        /// Runs a demo that put values into the A and B columns.
+        /// </summary>
+        /// <param name="sender"> Button that raised event. </param>
+        /// <param name="e"> Event that was raised. </param>
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Random rand = new Random();
+            for (int i = 0; i < 50; ++i)
+            {
+                this.MainSpreadSheet.GetCell(rand.Next(50), rand.Next(26)).Text = "Howdy";
+            }
+
+            for (int i = 0; i < this.MainSpreadSheet.RowCount(); ++i)
+            {
+                this.MainSpreadSheet.GetCell(i, 1).Text = "This Cell is B" + (i + 1);
+            }
+
+            for (int i = 0; i < this.MainSpreadSheet.RowCount(); ++i)
+            {
+                this.MainSpreadSheet.GetCell(i, 0).Text = "=B" + i;
+            }
         }
     }
 }
