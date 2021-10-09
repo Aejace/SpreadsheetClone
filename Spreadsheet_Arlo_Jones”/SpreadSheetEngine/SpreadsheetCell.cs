@@ -28,6 +28,5 @@ namespace Cpts321
             : base(rowIndex, columnIndex)
         {
         }
-
     }
 }
