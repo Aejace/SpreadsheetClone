@@ -37,6 +37,11 @@ namespace Cpts321
         /// <returns></returns>
         public Node CreateNode(string nodeString)
         {
+            if (string.IsNullOrEmpty(nodeString))
+            {
+                return null;
+            }
+
             if (char.IsLetter(nodeString[0]))
             {
                 return new VariableNode(nodeString, this.expressionTreeDictionary);

@@ -42,7 +42,7 @@ namespace Cpts321
                 string operandString = expression.Substring(0, operatorIndex);
                 nodeList.Add(nodeFactory.CreateNode(operandString));
                 nodeList.Add(nodeFactory.CreateNode(expression[operatorIndex].ToString()));
-                expression.Remove(0, operatorIndex);
+                expression = expression.Remove(0, operatorIndex + 1);
             }
 
             nodeList.Add(nodeFactory.CreateNode(expression));
@@ -52,16 +52,18 @@ namespace Cpts321
             {
                 for (int i = 0; i < nodeList.Count; ++i)
                 {
-                    if (nodeList.ElementAt(i).Weight == weightValue)
+                    if (nodeList.ElementAt(i).Weight == weightValue && ((OperatorNode)nodeList.ElementAt(i)).Left == null)
                     {
                         var operatorNode = (OperatorNode)nodeList[i];
                         operatorNode.Left = nodeList[i - 1];
                         operatorNode.Right = nodeList[i + 1];
+                        nodeList.Remove(operatorNode.Left);
+                        nodeList.Remove(operatorNode.Right);
+                        i = 0;
                     }
                 }
 
-                var nodesToRemove = nodeList.Where(x => x.Weight == weightValue).SelectMany(x => new List<Node>() { ((OperatorNode)x).Left, ((OperatorNode)x).Right });
-                nodesToRemove.ToList().ForEach(x => nodeList.Remove(x));
+                ++weightValue;
             }
 
             this.root = nodeList[0];

@@ -18,7 +18,7 @@ namespace Cpts321.ExpressionTreeNodes
         /// <summary>
         /// The quantity multiplier of the variable.
         /// </summary>
-        private double count;
+        private double count = 1;
 
         /// <summary>
         /// String variable, is the key in a key value pair for dictionaryPassedInByReference Ex. 'X' = 23.
@@ -37,18 +37,13 @@ namespace Cpts321.ExpressionTreeNodes
         /// <param name="dictionary"> Dictionary used to determine the value of the string variable. </param>
         internal VariableNode(string valueString, Dictionary<string, double> dictionary)
         {
-            // Local variable used to collect character that are a part of the variables count.
-            string countString = string.Empty;
-
             this.variableString = valueString[0].ToString(); // Sets the variable string to the first character in the value string
             this.dictionaryPassedInByReference = dictionary;
 
-            for (int i = 1; i < valueString.Length; ++i)
+            if (valueString.Length > 1)
             {
-                countString += valueString[i].ToString();
+                this.count = Convert.ToDouble(valueString.Substring(1, valueString.Length - 1));
             }
-
-            this.count = Convert.ToDouble(countString);
 
             this.Weight = 0;
         }
