@@ -23,7 +23,7 @@ namespace Spreadsheet_Arlo_Jones_
         /// <summary>
         /// SpreadSheet.
         /// </summary>
-        private SpreadSheet MainSpreadSheet;
+        private SpreadSheet mainSpreadSheet;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainForm"/> class.
@@ -31,7 +31,7 @@ namespace Spreadsheet_Arlo_Jones_
         public MainForm()
         {
             this.InitializeComponent();
-            this.MainSpreadSheet = new SpreadSheet(50, 26);
+            this.mainSpreadSheet = new SpreadSheet(50, 26);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace Spreadsheet_Arlo_Jones_
 
             this.MainDataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
 
-            this.MainSpreadSheet.CellPropertyChanged += new PropertyChangedEventHandler(SpreadSheetChangedEventHandler);
+            this.mainSpreadSheet.CellPropertyChanged += new PropertyChangedEventHandler(SpreadSheetChangedEventHandler);
 
             void SpreadSheetChangedEventHandler(object cellSender, PropertyChangedEventArgs cellValue)
             {
@@ -73,7 +73,7 @@ namespace Spreadsheet_Arlo_Jones_
         private void MainDataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             DataGridViewCell cellThatsTextChanged = this.MainDataGridView.CurrentCell;
-            this.MainSpreadSheet.GetCell(e.RowIndex, e.ColumnIndex).Text = cellThatsTextChanged.Value.ToString();
+            this.mainSpreadSheet.GetCell(e.RowIndex, e.ColumnIndex).Text = cellThatsTextChanged.Value.ToString();
         }
 
         /// <summary>
@@ -81,22 +81,22 @@ namespace Spreadsheet_Arlo_Jones_
         /// </summary>
         /// <param name="sender"> Button that raised event. </param>
         /// <param name="e"> Event that was raised. </param>
-        private void button1_Click(object sender, EventArgs e)
+        private void Button1_Click(object sender, EventArgs e)
         {
             Random rand = new Random();
             for (int i = 0; i < 50; ++i)
             {
-                this.MainSpreadSheet.GetCell(rand.Next(50), rand.Next(26)).Text = "Howdy";
+                this.mainSpreadSheet.GetCell(rand.Next(50), rand.Next(26)).Text = "Howdy";
             }
 
-            for (int i = 0; i < this.MainSpreadSheet.RowCount(); ++i)
+            for (int i = 0; i < this.mainSpreadSheet.RowCount(); ++i)
             {
-                this.MainSpreadSheet.GetCell(i, 1).Text = "This Cell is B" + (i + 1);
+                this.mainSpreadSheet.GetCell(i, 1).Text = "This Cell is B" + (i + 1);
             }
 
-            for (int i = 0; i < this.MainSpreadSheet.RowCount(); ++i)
+            for (int i = 0; i < this.mainSpreadSheet.RowCount(); ++i)
             {
-                this.MainSpreadSheet.GetCell(i, 0).Text = "=B" + i;
+                this.mainSpreadSheet.GetCell(i, 0).Text = "=B" + i;
             }
         }
     }
