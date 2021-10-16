@@ -19,11 +19,56 @@ namespace Cpts321
         /// <summary>
         /// .
         /// </summary>
+        private Dictionary<string, double> expressionTreeDictionary;
+
+        /// <summary>
+        /// .
+        /// </summary>
+        /// <param name="dictionary"></param>
+        public NodeFactory(Dictionary<string, double> dictionary)
+        {
+            this.expressionTreeDictionary = dictionary;
+        }
+
+        /// <summary>
+        /// .
+        /// </summary>
         /// <param name="nodeString"></param>
         /// <returns></returns>
         public Node CreateNode(string nodeString)
         {
+            if (char.IsLetter(nodeString[0]))
+            {
+                return new VariableNode(nodeString, this.expressionTreeDictionary);
+            }
+            else if (char.IsNumber(nodeString[0]))
+            {
+                return new ConstantNode(nodeString);
+            }
+            else
+            {
+                if (nodeString[0] == '*')
+                {
+                    return new MultiplicationNode(1);
+                }
 
+                if (nodeString[0] == '/')
+                {
+                    return new DivisionNode(1);
+                }
+
+                if (nodeString[0] == '+')
+                {
+                    return new AdditionNode(2);
+                }
+
+                if (nodeString[0] == '-')
+                {
+                    return new SubtractionNode(2);
+                }
+            }
+
+            return null;
         }
     }
 }

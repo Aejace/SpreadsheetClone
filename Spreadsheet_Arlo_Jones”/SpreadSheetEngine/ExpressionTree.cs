@@ -19,6 +19,11 @@ namespace Cpts321
         /// <summary>
         /// .
         /// </summary>
+        internal static Dictionary<string, double> treeDictionary = new Dictionary<string, double>();
+
+        /// <summary>
+        /// .
+        /// </summary>
         private Node root;
 
         /// <summary>
@@ -27,7 +32,7 @@ namespace Cpts321
         /// <param name="expression"></param>
         public ExpressionTree(string expression)
         {
-            NodeFactory nodeFactory = new NodeFactory();
+            NodeFactory nodeFactory = new NodeFactory(treeDictionary);
             List<Node> nodeList = new List<Node>();
             var operatorCharacters = new char[] { '*', '/', '+', '-' };
             int operatorIndex;
@@ -69,7 +74,7 @@ namespace Cpts321
         /// <param name="variableValue"></param>
         public void SetVariable(string variableName, double variableValue)
         {
-
+            treeDictionary.Add(variableName, variableValue);
         }
 
         /// <summary>
