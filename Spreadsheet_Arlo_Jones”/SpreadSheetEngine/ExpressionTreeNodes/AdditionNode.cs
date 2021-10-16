@@ -11,10 +11,19 @@ namespace Cpts321.ExpressionTreeNodes
     using System.Threading.Tasks;
 
     /// <summary>
-    /// .
+    /// Performs the addition operation with it's two children node's value's as input when evaluated.
     /// </summary>
     internal class AdditionNode : OperatorNode
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AdditionNode"/> class.
+        /// </summary>
+        /// <param name="priority"> Represents the priority weight of the operator being constructed. </param>
+        public AdditionNode(int priority)
+            : base(priority)
+        {
+        }
+
         /// <summary>
         /// Evalute is overloaded to handle addition.
         /// </summary>

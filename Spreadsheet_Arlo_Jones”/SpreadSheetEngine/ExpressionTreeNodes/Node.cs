@@ -11,7 +11,7 @@ namespace Cpts321.ExpressionTreeNodes
     using System.Threading.Tasks;
 
     /// <summary>
-    /// .
+    /// Abstract node, Expression Tree will be built using nodes that inherit from this class.
     /// </summary>
     public abstract class Node
     {
@@ -21,13 +21,18 @@ namespace Cpts321.ExpressionTreeNodes
         private int weight;
 
         /// <summary>
-        /// .
+        /// Gets or sets the value of weight.
         /// </summary>
         internal int Weight
         {
             get
             {
                 return this.weight;
+            }
+
+            set
+            {
+                this.weight = value;
             }
         }
 

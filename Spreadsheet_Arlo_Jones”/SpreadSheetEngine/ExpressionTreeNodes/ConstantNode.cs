@@ -11,12 +11,12 @@ namespace Cpts321.ExpressionTreeNodes
     using System.Threading.Tasks;
 
     /// <summary>
-    /// .
+    /// Constant node contains a double the represents a constant value in the exspression to be evaluated.
     /// </summary>
     internal class ConstantNode : Node
     {
         /// <summary>
-        /// .
+        /// The value of the node.
         /// </summary>
         private double value;
 
@@ -27,12 +27,13 @@ namespace Cpts321.ExpressionTreeNodes
         internal ConstantNode(string valueString)
         {
             this.value = Convert.ToDouble(valueString);
+            this.Weight = 0;
         }
 
         /// <summary>
-        /// Evaluate is overloaded to .
+        /// Evaluate is overloaded to return the value of the node.
         /// </summary>
-        /// <returns> A double containing the evaluated value of the variable node. </returns>
+        /// <returns> A double containing the evaluated value of the constant node. </returns>
         internal override double Evaluate()
         {
             return this.value;
