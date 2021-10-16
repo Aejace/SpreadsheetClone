@@ -15,6 +15,18 @@ namespace Cpts321.ExpressionTreeNodes
     /// </summary>
     internal class VariableNode : Node
     {
+        internal VariableNode()
+        {
 
+        }
+
+        /// <summary>
+        /// Evalute is overloaded to return the nodes value.
+        /// </summary>
+        /// <returns> A double containing the evaluated value of the constant node. </returns>
+        internal override double Evaluate()
+        {
+            return count * 
+        }
     }
 }

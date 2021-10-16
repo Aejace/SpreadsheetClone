@@ -19,7 +19,7 @@ namespace Cpts321.ExpressionTreeNodes
         /// Evalute is overloaded to handle division.
         /// </summary>
         /// <returns> A double containing the evaluated value of the division node. </returns>
-        public override double Evaluate()
+        internal override double Evaluate()
         {
             return this.Left.Evaluate() / this.Right.Evaluate();
         }
