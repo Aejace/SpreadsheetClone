@@ -12,29 +12,36 @@ namespace Cpts321
     using Cpts321.ExpressionTreeNodes;
 
     /// <summary>
-    /// .
+    /// Handles the creation of nodes.
     /// </summary>
     public class NodeFactory
     {
         /// <summary>
-        /// .
+        /// Dictionary containing key value pairs for variables names and what value they represent.
         /// </summary>
-        private Dictionary<string, double> expressionTreeDictionary;
+        private Dictionary<string, double> expressionTreeVariableDictionary;
 
         /// <summary>
-        /// .
+        /// Dictionary containing key value pairs for variables names and what value they represent.
         /// </summary>
-        /// <param name="dictionary"></param>
-        public NodeFactory(Dictionary<string, double> dictionary)
+        private Dictionary<char, Type> expressionTreeOperatorDictionary;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NodeFactory"/> class.
+        /// </summary>
+        /// <param name="varDictionary"> Dictionary passed in from expression tree, will be passed into variable nodes for evaluation. </param>
+        /// <param name="opDictionary"> Dictionary passed in from expression tree, contains operators expression tree supports. </param>
+        public NodeFactory(Dictionary<string, double> varDictionary, Dictionary<char, Type> opDictionary)
         {
-            this.expressionTreeDictionary = dictionary;
+            this.expressionTreeVariableDictionary = varDictionary;
+            this.expressionTreeOperatorDictionary = opDictionary;
         }
 
         /// <summary>
-        /// .
+        /// Factory method that creates nodes, returns the nodes to expression tree.
         /// </summary>
-        /// <param name="nodeString"></param>
-        /// <returns></returns>
+        /// <param name="nodeString"> String used to determine what kind of node to create. </param>
+        /// <returns> Returns instantiated nodes of various types. </returns>
         public Node CreateNode(string nodeString)
         {
             if (string.IsNullOrEmpty(nodeString))
@@ -42,35 +49,19 @@ namespace Cpts321
                 return null;
             }
 
-            if (char.IsLetter(nodeString[0]))
+            bool result = nodeString.Any(x => char.IsLetter(x));
+            if (result == true)
             {
-                return new VariableNode(nodeString, this.expressionTreeDictionary);
+                return new VariableNode(nodeString, this.expressionTreeVariableDictionary);
             }
             else if (char.IsNumber(nodeString[0]))
             {
                 return new ConstantNode(nodeString);
             }
-            else
+            else if (this.expressionTreeOperatorDictionary.ContainsKey(nodeString[0]))
             {
-                if (nodeString[0] == '*')
-                {
-                    return new MultiplicationNode();
-                }
-
-                if (nodeString[0] == '/')
-                {
-                    return new DivisionNode();
-                }
-
-                if (nodeString[0] == '+')
-                {
-                    return new AdditionNode();
-                }
-
-                if (nodeString[0] == '-')
-                {
-                    return new SubtractionNode();
-                }
+                object operatorNodeObject = Activator.CreateInstance(this.expressionTreeOperatorDictionary[nodeString[0]]);
+                return (Node)operatorNodeObject;
             }
 
             return null;

@@ -33,16 +33,21 @@ namespace Cpts321.ExpressionTreeNodes
         /// <summary>
         /// Initializes a new instance of the <see cref="VariableNode"/> class.
         /// </summary>
-        /// <param name="valueString"> The string of numbers used to create the double that is the value of the node. </param>
+        /// <param name="inputString"> The string used to determine the variable string and count of the variable node. </param>
         /// <param name="dictionary"> Dictionary used to determine the value of the string variable. </param>
-        internal VariableNode(string valueString, Dictionary<string, double> dictionary)
+        internal VariableNode(string inputString, Dictionary<string, double> dictionary)
         {
-            this.variableString = valueString[0].ToString(); // Sets the variable string to the first character in the value string
             this.dictionaryPassedInByReference = dictionary;
-
-            if (valueString.Length > 1)
+            char[] digits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+            int firstIntegerIndex = inputString.IndexOfAny(digits);
+            if (firstIntegerIndex != -1)
             {
-                this.count = Convert.ToDouble(valueString.Substring(1, valueString.Length - 1));
+                this.variableString = inputString.Substring(0, firstIntegerIndex); // Sets the variable string to the first character in the value string
+                this.count = Convert.ToDouble(inputString.Substring(firstIntegerIndex));
+            }
+            else
+            {
+                this.variableString = inputString;
             }
 
             this.Weight = 0;

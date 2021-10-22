@@ -20,7 +20,7 @@ namespace Cpts321
         /// <summary>
         /// Dictionary contaning variable strings as keys and their assigned values as values.
         /// </summary>
-        private static Dictionary<string, double> variableDictionary = new Dictionary<string, double>();
+        private Dictionary<string, double> variableDictionary = new Dictionary<string, double>();
 
         /// <summary>
         /// Operator dictionary, contains operator characters as keys, and the operator nodes they corespond to as values.
@@ -42,10 +42,15 @@ namespace Cpts321
             this.root = this.BuildTree(expression);
         }
 
+        /// <summary>
+        /// Builds a binary expression tree.
+        /// </summary>
+        /// <param name="expression"> Math expression to parse and then build a tree with. </param>
+        /// <returns> The node the is the root of the expresssion tree built. </returns>
         private Node BuildTree(string expression)
         {
-            NodeFactory nodeFactory = new NodeFactory(variableDictionary);
-            List<char> operatorCharactersList = operatorDictionary.Keys.ToList();
+            NodeFactory nodeFactory = new NodeFactory(this.variableDictionary, this.operatorDictionary);
+            List<char> operatorCharactersList = this.operatorDictionary.Keys.ToList();
             operatorCharactersList.Add('(');
             operatorCharactersList.Add(')');
             char[] operatorCharacters = operatorCharactersList.ToArray();
@@ -100,7 +105,7 @@ namespace Cpts321
         /// <param name="variableValue"> The value assaociated with the veriables name. </param>
         public void SetVariable(string variableName, double variableValue)
         {
-            variableDictionary.Add(variableName, variableValue);
+            this.variableDictionary.Add(variableName, variableValue);
         }
 
         /// <summary>
