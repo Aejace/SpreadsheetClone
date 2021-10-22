@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpreadSheetTests", "SpreadS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadSheetEngine", "SpreadSheetEngine\SpreadSheetEngine.csproj", "{7525C00D-CF65-48FA-9770-C64483C2FCE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressionTreeDemo", "ExpressionTreeDemo\ExpressionTreeDemo.csproj", "{5295159E-0074-4D35-80E3-82A3C0D72E86}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpressionTreeDemo", "ExpressionTreeDemo\ExpressionTreeDemo.csproj", "{5295159E-0074-4D35-80E3-82A3C0D72E86}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpressionTreeTests", "ExpressionTreeTests\ExpressionTreeTests.csproj", "{607E599D-EB71-4374-8B45-CA6014DBDC77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{5295159E-0074-4D35-80E3-82A3C0D72E86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5295159E-0074-4D35-80E3-82A3C0D72E86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5295159E-0074-4D35-80E3-82A3C0D72E86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{607E599D-EB71-4374-8B45-CA6014DBDC77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{607E599D-EB71-4374-8B45-CA6014DBDC77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{607E599D-EB71-4374-8B45-CA6014DBDC77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{607E599D-EB71-4374-8B45-CA6014DBDC77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

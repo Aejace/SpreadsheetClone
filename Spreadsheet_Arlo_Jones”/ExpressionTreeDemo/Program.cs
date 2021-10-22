@@ -27,7 +27,7 @@ namespace ExpressionTreeDemo
 
         static void Main(string[] args)
         {
-            string expression = string.Empty;
+            string expression = "0";
             ExpressionTree tree = new ExpressionTree(expression);
 
 

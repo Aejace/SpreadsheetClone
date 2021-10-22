@@ -56,17 +56,53 @@ namespace Cpts321
             char[] operatorCharacters = operatorCharactersList.ToArray();
             List<Node> nodeList = new List<Node>();
             int operatorIndex;
+            int parenthesesCount = 0;
 
             // While check sets operatorIndex to the index of the first operator character found, if no operator is found, it breaks the loop
-            while ((operatorIndex = expression.IndexOfAny(operatorCharacters)) > 0)
+            while ((operatorIndex = expression.IndexOfAny(operatorCharacters)) >= 0)
             {
-                string operandString = expression.Substring(0, operatorIndex); // Create a substring starting at the begining of the string and going until the first operator
-                nodeList.Add(nodeFactory.CreateNode(operandString)); // Create a node using the substring preceding the operator
-                nodeList.Add(nodeFactory.CreateNode(expression[operatorIndex].ToString())); // Create node using the operator character
-                expression = expression.Remove(0, operatorIndex + 1); // Remove string that has now been converted to nodes.
+                if (expression[operatorIndex] == '(')
+                {
+                    ++parenthesesCount;
+                    int i = operatorIndex;
+                    while (parenthesesCount != 0 && i < expression.Length - 1)
+                    {
+                        ++i;
+
+                        if (expression[i] == '(')
+                        {
+                            ++parenthesesCount;
+                        }
+
+                        if (expression[i] == ')')
+                        {
+                            --parenthesesCount;
+                        }
+                    }
+
+                    if ((parenthesesCount != 0) || (i == operatorIndex + 1))
+                    {
+                        // error
+                    }
+                    else
+                    {
+                        nodeList.Add(this.BuildTree(expression.Substring(operatorIndex + 1, i - operatorIndex - 1)));
+                        expression = expression.Remove(0, i + 1);
+                    }
+                }
+                else
+                {
+                    string operandString = expression.Substring(0, operatorIndex); // Create a substring starting at the begining of the string and going until the first operator
+                    nodeList.Add(nodeFactory.CreateNode(operandString)); // Create a node using the substring preceding the operator
+                    nodeList.Add(nodeFactory.CreateNode(expression[operatorIndex].ToString())); // Create node using the operator character
+                    expression = expression.Remove(0, operatorIndex + 1); // Remove string that has now been converted to nodes.
+                }
             }
 
-            nodeList.Add(nodeFactory.CreateNode(expression)); // Creates a node for the last operand in the exspression
+            if (expression.Length > 0)
+            {
+                nodeList.Add(nodeFactory.CreateNode(expression)); // Creates a node for the last operand in the exspression
+            }
 
             int weightValue = 1; // Starting weight value
             while (nodeList.Count > 1)
