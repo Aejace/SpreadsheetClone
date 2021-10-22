@@ -27,15 +27,6 @@ namespace Cpts321.ExpressionTreeNodes
         private Node left;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OperatorNode"/> class.
-        /// </summary>
-        /// <param name="priority"> Represents the priority weight of the operator being constructed. </param>
-        internal OperatorNode(int priority)
-        {
-            this.Weight = priority;
-        }
-
-        /// <summary>
         /// Gets or sets the right child node.
         /// </summary>
         internal Node Right

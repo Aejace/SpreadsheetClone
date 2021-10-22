@@ -54,22 +54,22 @@ namespace Cpts321
             {
                 if (nodeString[0] == '*')
                 {
-                    return new MultiplicationNode(1);
+                    return new MultiplicationNode();
                 }
 
                 if (nodeString[0] == '/')
                 {
-                    return new DivisionNode(1);
+                    return new DivisionNode();
                 }
 
                 if (nodeString[0] == '+')
                 {
-                    return new AdditionNode(2);
+                    return new AdditionNode();
                 }
 
                 if (nodeString[0] == '-')
                 {
-                    return new SubtractionNode(2);
+                    return new SubtractionNode();
                 }
             }
 
