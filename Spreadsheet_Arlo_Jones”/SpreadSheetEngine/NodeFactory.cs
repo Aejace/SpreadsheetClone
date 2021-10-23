@@ -33,6 +33,7 @@ namespace Cpts321
         /// <param name="opDictionary"> Dictionary passed in from expression tree, contains operators expression tree supports. </param>
         public NodeFactory(Dictionary<string, double> varDictionary, Dictionary<char, Type> opDictionary)
         {
+            // Initialize dictionaries.
             this.expressionTreeVariableDictionary = varDictionary;
             this.expressionTreeOperatorDictionary = opDictionary;
         }
@@ -44,22 +45,23 @@ namespace Cpts321
         /// <returns> Returns instantiated nodes of various types. </returns>
         public Node CreateNode(string nodeString)
         {
+            // Null check
             if (string.IsNullOrEmpty(nodeString))
             {
                 return null;
             }
 
-            bool result = nodeString.Any(x => char.IsLetter(x));
+            bool result = nodeString.Any(x => char.IsLetter(x)); // Result will be set to true if nodeString contains any letters.
             if (result == true)
             {
-                return new VariableNode(nodeString, this.expressionTreeVariableDictionary);
+                return new VariableNode(nodeString, this.expressionTreeVariableDictionary); // Initalize a new variable node.
             }
             else if (char.IsNumber(nodeString[0]))
             {
-                return new ConstantNode(nodeString);
+                return new ConstantNode(nodeString); // Initalize a new constant Node
             }
             else if (this.expressionTreeOperatorDictionary.ContainsKey(nodeString[0]))
-            {
+            { // If operator is recognized, create a node of the appropriate type.
                 object operatorNodeObject = Activator.CreateInstance(this.expressionTreeOperatorDictionary[nodeString[0]]);
                 return (Node)operatorNodeObject;
             }

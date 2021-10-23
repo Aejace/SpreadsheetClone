@@ -20,7 +20,7 @@ namespace Cpts321.ExpressionTreeNodes
         /// </summary>
         public AdditionNode()
         {
-            this.Weight = 4;
+            this.Weight = 4; // Weight is 4 using C precedence conventions
         }
 
         /// <summary>

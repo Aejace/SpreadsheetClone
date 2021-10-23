@@ -26,8 +26,8 @@ namespace Cpts321.ExpressionTreeNodes
         /// <param name="valueString"> The string of numbers used to create the double that is the value of the node. </param>
         internal ConstantNode(string valueString)
         {
-            this.value = Convert.ToDouble(valueString);
-            this.Weight = 0;
+            this.value = Convert.ToDouble(valueString); // Set value
+            this.Weight = 0; // Weight is zero. Constant nodes dont have a precedence they should be operated on, but all nodes will be checked for precedence, so it is neccessary to include it here.
         }
 
         /// <summary>

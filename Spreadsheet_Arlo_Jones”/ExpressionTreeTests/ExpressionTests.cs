@@ -7,8 +7,16 @@ namespace ExpressionTreeTests
     using Cpts321;
     using NUnit.Framework;
 
-    public class Tests
+    /// <summary>
+    /// Tests the functionality of ExpressionTree using the elvauation of different input expressions.
+    /// </summary>
+    public class ExpressionTests
     {
+        /// <summary>
+        /// Creates an expression tree using the given expression, then evaluates the expression using the expression tree.
+        /// </summary>
+        /// <param name="expresssion"> The math expression to be evaluated using the tree. </param>
+        /// <returns> The evaluated value of the expression. </returns>
         [TestCase("4+7-2", ExpectedResult = 9.0)]
         [TestCase("5-4-3+10", ExpectedResult = 8.0)]
         [TestCase("5-4+10-3+7-6", ExpectedResult = 9.0)]

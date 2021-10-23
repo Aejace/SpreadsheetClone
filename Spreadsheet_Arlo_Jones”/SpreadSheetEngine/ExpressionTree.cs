@@ -38,8 +38,39 @@ namespace Cpts321
         /// <param name="expression"> The string that will be parsed into nodes to create the expression tree. </param>
         public ExpressionTree(string expression)
         {
-            this.TraverseAvailableOperators((op, type) => this.operatorDictionary.Add(op, type));
-            this.root = this.BuildTree(expression);
+            this.TraverseAvailableOperators((op, type) => this.operatorDictionary.Add(op, type)); // Adds operator characters and thier coresponding node type to operatorDictionary.
+            this.root = this.BuildTree(expression); // Sets root to node returned by BuildTree
+        }
+
+        /// <summary>
+        /// Operator Delegate.
+        /// </summary>
+        /// <param name="op"> Operator character. </param>
+        /// <param name="type"> Type: The kind of operator node indicated by the character. </param>
+        private delegate void OnOperator(char op, Type type);
+
+        /// <summary>
+        /// Adds variables to a dictionary to be referenced by variable nodes when evaluated.
+        /// </summary>
+        /// <param name="variableName"> The name of the variable to add to the dictionary. </param>
+        /// <param name="variableValue"> The value assaociated with the veriables name. </param>
+        public void SetVariable(string variableName, double variableValue)
+        {
+            if (this.variableDictionary.ContainsKey(variableName))
+            { // If the variable name has already been added to the dictionary, remove it so it can be replaced.
+                this.variableDictionary.Remove(variableName);
+            }
+
+            this.variableDictionary.Add(variableName, variableValue); // Add variable with associated value to dictionary.
+        }
+
+        /// <summary>
+        /// Evaluates the expression tree.
+        /// </summary>
+        /// <returns> The value of the expression in the expression tree. </returns>
+        public double Evaluate()
+        {
+            return this.root.Evaluate();
         }
 
         /// <summary>
@@ -49,52 +80,54 @@ namespace Cpts321
         /// <returns> The node the is the root of the expresssion tree built. </returns>
         private Node BuildTree(string expression)
         {
-            NodeFactory nodeFactory = new NodeFactory(this.variableDictionary, this.operatorDictionary);
-            List<char> operatorCharactersList = this.operatorDictionary.Keys.ToList();
-            operatorCharactersList.Add('(');
+            NodeFactory nodeFactory = new NodeFactory(this.variableDictionary, this.operatorDictionary); // Initialize node factory, with operator dictionary and variable dictionary
+            List<Node> nodeList = new List<Node>(); // Initalizes list of nodes that will be converted into an expression tree.
+            List<char> operatorCharactersList = this.operatorDictionary.Keys.ToList(); // Creates list of operator characters using operator dictionary
+            operatorCharactersList.Add('('); // Add Parentheses to list of operators to check for while iterating.
             operatorCharactersList.Add(')');
-            char[] operatorCharacters = operatorCharactersList.ToArray();
-            List<Node> nodeList = new List<Node>();
-            int operatorIndex;
-            int parenthesesCount = 0;
+            char[] operatorCharacters = operatorCharactersList.ToArray(); // Create character array of operators to check while iterating through expression. Needs to be an array to be used with expression.IndexOfAny().
+            int operatorIndex; // Index of the first operator found while iterating.
+            int parenthesesCount = 0; // Count of parentheses, used to find parentheses pairs.
 
-            expression = string.Concat(expression.Where(c => !char.IsWhiteSpace(c))); // Remove white space in expression
+            expression = string.Concat(expression.Where(c => !char.IsWhiteSpace(c))); // Remove white space in expression before parsing.
 
-            // While check sets operatorIndex to the index of the first operator character found, if no operator is found, it breaks the loop
+            // While-check sets operatorIndex to the index of the first operator character found, if no operator is found, it breaks the loop
             while ((operatorIndex = expression.IndexOfAny(operatorCharacters)) >= 0)
             {
                 if (expression[operatorIndex] == '(')
-                {
-                    ++parenthesesCount;
-                    int i = operatorIndex;
+                { // If operator is an open parentheses, find its pair.
+                    ++parenthesesCount; // Increment for first parentheses found
+                    int i = operatorIndex; // Iterates through rest of list to find close parentheses pair.
                     while (parenthesesCount != 0 && i < expression.Length - 1)
-                    {
-                        ++i;
+                    { // While there is an uneven number of matches and the end of the string hasnt been reached.
+                        ++i; // Check next element
 
                         if (expression[i] == '(')
                         {
-                            ++parenthesesCount;
+                            ++parenthesesCount; // Increment for new open
                         }
 
                         if (expression[i] == ')')
                         {
-                            --parenthesesCount;
+                            --parenthesesCount; // Decrement for new close
                         }
                     }
 
                     if ((parenthesesCount != 0) || (i == operatorIndex + 1))
                     {
-                        // error
+                        // Unimplimented, Should throw an error becuase parentheses are mis matched.
                     }
                     else
                     {
-                        nodeList.Add(this.BuildTree(expression.Substring(operatorIndex + 1, i - operatorIndex - 1)));
-                        expression = expression.Remove(0, i + 1);
+                        nodeList.Add(this.BuildTree(expression.Substring(operatorIndex + 1, i - operatorIndex - 1))); // Recursively call build tree using the substring between the parentheses as new expression parameter. Add root of tree returned to nodelist.
+                        expression = expression.Remove(0, i + 1); // Once this portion of the string has been converted into a node, remove it from the expression before parsing for the next node.
                     }
                 }
                 else
-                {
-                    string operandString = expression.Substring(0, operatorIndex); // Create a substring starting at the begining of the string and going until the first operator
+                { // Create nodes for operator and charaters preceding it (if any)
+                    string operandString = expression.Substring(0, operatorIndex); // Create a substring starting at the begining of the expression and going until the first operator
+
+                    // If operand string is empty, dont create a node from the empty string.
                     if (operandString != string.Empty)
                     {
                         nodeList.Add(nodeFactory.CreateNode(operandString)); // Create a node using the substring preceding the operator
@@ -105,16 +138,18 @@ namespace Cpts321
                 }
             }
 
+            // If there are any characters left in string after all relevant operators have been turned into nodes
             if (expression.Length > 0)
             {
                 nodeList.Add(nodeFactory.CreateNode(expression)); // Creates a node for the last operand in the exspression
             }
 
-            int weightValue = 1; // Starting weight value
+            // converts nodeList into an expression tree.
+            int weightValue = 1; // Starting weight value. Loop will handle all operator of a given weight before proceeding to the next weight, and will continue to do so untill all operators are handled (assigned children)
             while (nodeList.Count > 1)
-            {
+            { // While there is more than one node left in the list, continue converting. When there is one left, that one will be the root of the tree.
                 for (int i = 0; i < nodeList.Count; ++i)
-                {
+                { // Iterate through nodeList.
                     // If a given node is the correct weight and does not already have children
                     if (nodeList.ElementAt(i).Weight == weightValue && ((OperatorNode)nodeList.ElementAt(i)).Left == null)
                     {
@@ -130,33 +165,7 @@ namespace Cpts321
                 ++weightValue; // Increment weight value to begin pass for next lower precedence operator nodes
             }
 
-            return nodeList[0];
-        }
-
-        /// <summary>
-        /// Operator Delegate.
-        /// </summary>
-        /// <param name="op"> Operator. </param>
-        /// <param name="type"> Type. </param>
-        private delegate void OnOperator(char op, Type type);
-
-        /// <summary>
-        /// Adds variables to a dictionary to be referenced by variable nodes when evaluated.
-        /// </summary>
-        /// <param name="variableName"> The name of the variable to add to the dictionary. </param>
-        /// <param name="variableValue"> The value assaociated with the veriables name. </param>
-        public void SetVariable(string variableName, double variableValue)
-        {
-            this.variableDictionary.Add(variableName, variableValue);
-        }
-
-        /// <summary>
-        /// Evaluates the expression tree.
-        /// </summary>
-        /// <returns> The value of the expression in the expression tree. </returns>
-        public double Evaluate()
-        {
-            return this.root.Evaluate();
+            return nodeList.FirstOrDefault(); // Returns root node.
         }
 
         /// <summary>

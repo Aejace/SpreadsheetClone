@@ -20,7 +20,7 @@ namespace Cpts321.ExpressionTreeNodes
         /// </summary>
         public MultiplicationNode()
         {
-            this.Weight = 3;
+            this.Weight = 3; // Weight is 3 using C precedence conventions
         }
 
         /// <summary>
