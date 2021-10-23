@@ -18,11 +18,15 @@ namespace Cpts321.ExpressionTreeNodes
         /// <summary>
         /// Initializes a new instance of the <see cref="AdditionNode"/> class.
         /// </summary>
-        /// <param name="priority"> Represents the priority weight of the operator being constructed. </param>
-        public AdditionNode(int priority)
-            : base(priority)
+        public AdditionNode()
         {
+            this.Weight = 4; // Weight is 4 using C precedence conventions
         }
+
+        /// <summary>
+        /// Gets the character associated with the type of operation the operator node performs.
+        /// </summary>
+        public static char OperatorChar => '+';
 
         /// <summary>
         /// Evalute is overloaded to handle addition.
