@@ -58,6 +58,8 @@ namespace Cpts321
             int operatorIndex;
             int parenthesesCount = 0;
 
+            expression = string.Concat(expression.Where(c => !char.IsWhiteSpace(c))); // Remove white space in expression
+
             // While check sets operatorIndex to the index of the first operator character found, if no operator is found, it breaks the loop
             while ((operatorIndex = expression.IndexOfAny(operatorCharacters)) >= 0)
             {
@@ -93,7 +95,11 @@ namespace Cpts321
                 else
                 {
                     string operandString = expression.Substring(0, operatorIndex); // Create a substring starting at the begining of the string and going until the first operator
-                    nodeList.Add(nodeFactory.CreateNode(operandString)); // Create a node using the substring preceding the operator
+                    if (operandString != string.Empty)
+                    {
+                        nodeList.Add(nodeFactory.CreateNode(operandString)); // Create a node using the substring preceding the operator
+                    }
+
                     nodeList.Add(nodeFactory.CreateNode(expression[operatorIndex].ToString())); // Create node using the operator character
                     expression = expression.Remove(0, operatorIndex + 1); // Remove string that has now been converted to nodes.
                 }
