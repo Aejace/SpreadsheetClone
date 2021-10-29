@@ -36,9 +36,11 @@ namespace Cpts321
         /// Initializes a new instance of the <see cref="ExpressionTree"/> class.
         /// </summary>
         /// <param name="expression"> The string that will be parsed into nodes to create the expression tree. </param>
-        public ExpressionTree(string expression)
+        /// <param name="predefinedVariableDictionary"></param>
+        public ExpressionTree(string expression, Dictionary<string, double> predefinedVariableDictionary)
         {
             this.TraverseAvailableOperators((op, type) => this.operatorDictionary.Add(op, type)); // Adds operator characters and thier coresponding node type to operatorDictionary.
+            this.variableDictionary = predefinedVariableDictionary;
             this.root = this.BuildTree(expression); // Sets root to node returned by BuildTree
         }
 

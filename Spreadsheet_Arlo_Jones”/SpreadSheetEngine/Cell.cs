@@ -33,7 +33,7 @@ namespace Cpts321
         /// <summary>
         /// The evaluated value of a cell. Will be displayed in the UI.
         /// </summary>
-        private string value;
+        private string value = string.Empty;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Cell"/> class.
@@ -84,7 +84,11 @@ namespace Cpts321
 
             internal set
             {
-                this.value = value;
+                if (this.value != value)
+                {
+                    this.value = value;
+                    this.NotifyPropertyChanged("Value");
+                }
             }
         }
 

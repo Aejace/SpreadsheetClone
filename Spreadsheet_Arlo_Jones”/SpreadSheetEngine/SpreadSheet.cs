@@ -18,9 +18,19 @@ namespace Cpts321
     public class SpreadSheet
     {
         /// <summary>
+        /// .
+        /// </summary>
+        private Dictionary<string, double> cellNameandValueDictionary; // TODO: Might need to be internal
+
+        /// <summary>
         /// A 2d array that contains cells.
         /// </summary>
         private Cell[,] cellArray;
+
+        /// <summary>
+        /// Lists of cells that are dependent on cell indicated by array position.
+        /// </summary>
+        private List<string>[,] listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition;
 
         /// <summary>
         /// The number of rows the spreadsheet has.
@@ -42,6 +52,8 @@ namespace Cpts321
             this.numberOfRows = numRows;
             this.numberOfColumns = numColumns;
             this.cellArray = new Cell[numRows, numColumns]; // Creates a new instance of a cellArray
+            this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition = new List<string>[numRows, numColumns]; // Creates a new instance of listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition
+            this.cellNameandValueDictionary = new Dictionary<string, double>();
 
             for (int i = 0; i < this.numberOfRows; ++i)
             {
@@ -49,6 +61,8 @@ namespace Cpts321
                 {
                     this.cellArray[i, j] = new SpreadSheetCell(i, j);
                     this.cellArray[i, j].PropertyChanged += new PropertyChangedEventHandler(this.CellPropertyChangedEventHandler); // Subscribe to each SpreadSheetCell's property changed event
+                    string columnLetter = (i + 65).ToString();
+                    this.cellNameandValueDictionary.Add(columnLetter += j, Convert.ToDouble(this.cellArray[i, j].Value));
                 }
             }
         }
@@ -99,14 +113,16 @@ namespace Cpts321
             {
                 if (cellWhosePropertyChanged.Text.StartsWith("="))
                 {
-                    int columnIndex = cellWhosePropertyChanged.Text.ElementAt(1) - 65;
-                    string rowIndex = string.Empty;
-                    for (int i = 2; i < cellWhosePropertyChanged.Text.Count(); ++i)
-                    {
-                        rowIndex += cellWhosePropertyChanged.Text.ElementAt(i);
-                    }
+                    //int columnIndex = cellWhosePropertyChanged.Text.ElementAt(1) - 65;
+                    //string rowIndex = string.Empty;
+                    //for (int i = 2; i < cellWhosePropertyChanged.Text.Count(); ++i)
+                    //{
+                    //    rowIndex += cellWhosePropertyChanged.Text.ElementAt(i);
+                    //}
 
-                    cellWhosePropertyChanged.Value = this.cellArray[int.Parse(rowIndex), columnIndex].Value;
+                    //cellWhosePropertyChanged.Value = this.cellArray[int.Parse(rowIndex), columnIndex].Value;
+
+                    cellWhosePropertyChanged.Value = this.Evaluate(cellWhosePropertyChanged.Text, this.cellNameandValueDictionary);
                 }
                 else
                 {
@@ -115,6 +131,33 @@ namespace Cpts321
 
                 this.NotifyPropertyChanged(cellWhosePropertyChanged, cellWhosePropertyChanged.Value); // Notify subscribers (UI)
             }
+            else if (e.PropertyName == "Value")
+            {
+                for (int i = 0; i < this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[cellWhosePropertyChanged.RowIndexNumber, cellWhosePropertyChanged.ColumnIndexNumber].Count; ++i)
+                {
+                    string cellName = this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[cellWhosePropertyChanged.RowIndexNumber, cellWhosePropertyChanged.ColumnIndexNumber][i];
+                    int columnIndex = cellName[1] - 65;
+                    string rowIndex = string.Empty;
+                    for (int j = 2; j < cellWhosePropertyChanged.Text.Count(); ++j)
+                    {
+                        rowIndex += cellName[j];
+                    }
+
+                    this.cellArray[int.Parse(rowIndex), columnIndex].Value = this.Evaluate(this.cellArray[int.Parse(rowIndex), columnIndex].Text, this.cellNameandValueDictionary);
+                    this.NotifyPropertyChanged(this.cellArray[int.Parse(rowIndex), columnIndex], this.cellArray[int.Parse(rowIndex), columnIndex].Value); // Notify subscribers (UI)
+                }
+            }
+        }
+
+        /// <summary>
+        /// .
+        /// </summary>
+        /// <param name="expressionString"></param>
+        /// <param name="cellValuesByName"></param>
+        /// <returns></returns>
+        private string Evaluate(string expressionString, Dictionary<string, double> cellValuesByName)
+        {
+
         }
 
         /// <summary>
