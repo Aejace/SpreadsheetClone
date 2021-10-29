@@ -73,7 +73,7 @@ namespace Spreadsheet_Arlo_Jones_
         private void MainDataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             DataGridViewCell cellThatsTextChanged = this.MainDataGridView.CurrentCell;
-            this.mainSpreadSheet.GetCell(e.RowIndex, e.ColumnIndex).Text = cellThatsTextChanged.Value.ToString();
+            this.mainSpreadSheet.GetCellByRowAndColumn(e.RowIndex, e.ColumnIndex).Text = cellThatsTextChanged.Value.ToString();
         }
 
         /// <summary>
@@ -86,17 +86,17 @@ namespace Spreadsheet_Arlo_Jones_
             Random rand = new Random();
             for (int i = 0; i < 50; ++i)
             {
-                this.mainSpreadSheet.GetCell(rand.Next(50), rand.Next(26)).Text = "Howdy";
+                this.mainSpreadSheet.GetCellByRowAndColumn(rand.Next(50), rand.Next(26)).Text = "Howdy";
             }
 
             for (int i = 0; i < this.mainSpreadSheet.RowCount(); ++i)
             {
-                this.mainSpreadSheet.GetCell(i, 1).Text = "This Cell is B" + (i + 1);
+                this.mainSpreadSheet.GetCellByRowAndColumn(i, 1).Text = "This Cell is B" + (i + 1);
             }
 
             for (int i = 0; i < this.mainSpreadSheet.RowCount(); ++i)
             {
-                this.mainSpreadSheet.GetCell(i, 0).Text = "=B" + i;
+                this.mainSpreadSheet.GetCellByRowAndColumn(i, 0).Text = "=B" + i;
             }
         }
     }

@@ -28,6 +28,11 @@ namespace Cpts321
         private Dictionary<char, Type> operatorDictionary = new Dictionary<char, Type>();
 
         /// <summary>
+        /// 
+        /// </summary>
+        private List<string> variables;
+
+        /// <summary>
         /// The starting node in the expression tree.
         /// </summary>
         private Node root;
@@ -64,6 +69,15 @@ namespace Cpts321
             }
 
             this.variableDictionary.Add(variableName, variableValue); // Add variable with associated value to dictionary.
+        }
+
+        /// <summary>
+        /// .
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetVariables()
+        {
+            return this.variables;
         }
 
         /// <summary>

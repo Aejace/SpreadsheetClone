@@ -78,9 +78,22 @@ namespace Cpts321
         /// <param name="rowIndex"> The row index of the cell desired. </param>
         /// <param name="columnIndex"> The column index of the cell desired. </param>
         /// <returns> Returns the cell at the index values given. </returns>
-        public Cell GetCell(int rowIndex, int columnIndex)
+        public Cell GetCellByRowAndColumn(int rowIndex, int columnIndex)
         {
             return this.cellArray[rowIndex, columnIndex];
+        }
+
+        /// <summary>
+        /// .
+        /// </summary>
+        /// <param name="rowIndex"></param>
+        /// <param name="columnIndex"></param>
+        /// <returns></returns>
+        public string GetCellName(int rowIndex, int columnIndex)
+        {
+            string columnName = (columnIndex + 65).ToString();
+            string rowName = rowIndex.ToString();
+            return columnName += rowName;
         }
 
         /// <summary>
@@ -108,42 +121,51 @@ namespace Cpts321
         /// <param name="e"> Contains information about the triggering event. </param>
         private void CellPropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
         {
-            Cell cellWhosePropertyChanged = sender as Cell;
+            Cell cellWhosePropertyChanged = sender as Cell; // the cell whose property changed is the sender of the event.
             if (e.PropertyName == "Text")
-            {
+            { // If the property that changed was the text property.
                 if (cellWhosePropertyChanged.Text.StartsWith("="))
-                {
-                    //int columnIndex = cellWhosePropertyChanged.Text.ElementAt(1) - 65;
-                    //string rowIndex = string.Empty;
-                    //for (int i = 2; i < cellWhosePropertyChanged.Text.Count(); ++i)
-                    //{
-                    //    rowIndex += cellWhosePropertyChanged.Text.ElementAt(i);
-                    //}
+                { // If the text is an expression
+                    // Remove old subscriptions, requires iterating through the double array of cells to find any instance where the cell whose property changed is subscribed to the value change of another cell.
+                    for (int i = 0; i < this.numberOfRows; ++i)
+                    {
+                        for (int j = 0; j < this.numberOfColumns; ++j)
+                        {
+                            string cellWhosePropertyChangedName = this.GetCellName(cellWhosePropertyChanged.RowIndexNumber, cellWhosePropertyChanged.ColumnIndexNumber);
+                            if (this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[i, j].Contains(cellWhosePropertyChangedName))
+                            { // If cell name is found in list of subscribers, remove it.
+                                this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[i, j].Remove(cellWhosePropertyChangedName);
+                            }
+                        }
+                    }
 
-                    //cellWhosePropertyChanged.Value = this.cellArray[int.Parse(rowIndex), columnIndex].Value;
-
-                    cellWhosePropertyChanged.Value = this.Evaluate(cellWhosePropertyChanged.Text, this.cellNameandValueDictionary);
+                    // Evaluate text
+                    cellWhosePropertyChanged.Value = this.Evaluate(cellWhosePropertyChanged, this.cellNameandValueDictionary);
                 }
                 else
-                {
+                { // Text is not an expression, set value equal to text.
                     cellWhosePropertyChanged.Value = cellWhosePropertyChanged.Text;
                 }
 
                 this.NotifyPropertyChanged(cellWhosePropertyChanged, cellWhosePropertyChanged.Value); // Notify subscribers (UI)
             }
             else if (e.PropertyName == "Value")
-            {
+            { // If the property that changed was the cell's value.
+                // Evaluate every cell that is subscribed to the cell that's value was changed.
                 for (int i = 0; i < this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[cellWhosePropertyChanged.RowIndexNumber, cellWhosePropertyChanged.ColumnIndexNumber].Count; ++i)
                 {
                     string cellName = this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[cellWhosePropertyChanged.RowIndexNumber, cellWhosePropertyChanged.ColumnIndexNumber][i];
-                    int columnIndex = cellName[1] - 65;
+
+                    // Convert name of cell into row and column values.
+                    int columnIndex = cellName[0] - 65;
                     string rowIndex = string.Empty;
-                    for (int j = 2; j < cellWhosePropertyChanged.Text.Count(); ++j)
+                    for (int j = 1; j < cellName.Count(); ++j)
                     {
                         rowIndex += cellName[j];
                     }
 
-                    this.cellArray[int.Parse(rowIndex), columnIndex].Value = this.Evaluate(this.cellArray[int.Parse(rowIndex), columnIndex].Text, this.cellNameandValueDictionary);
+                    // Evaluate the cells text and update it's value.
+                    this.cellArray[int.Parse(rowIndex), columnIndex].Value = this.Evaluate(this.GetCellByRowAndColumn(int.Parse(rowIndex), columnIndex), this.cellNameandValueDictionary);
                     this.NotifyPropertyChanged(this.cellArray[int.Parse(rowIndex), columnIndex], this.cellArray[int.Parse(rowIndex), columnIndex].Value); // Notify subscribers (UI)
                 }
             }
@@ -152,12 +174,30 @@ namespace Cpts321
         /// <summary>
         /// .
         /// </summary>
-        /// <param name="expressionString"></param>
+        /// <param name="cellThatsBeingEvaluated"></param>
         /// <param name="cellValuesByName"></param>
         /// <returns></returns>
-        private string Evaluate(string expressionString, Dictionary<string, double> cellValuesByName)
+        private string Evaluate(Cell cellThatsBeingEvaluated, Dictionary<string, double> cellValuesByName)
         {
+            string cellName = this.GetCellName(cellThatsBeingEvaluated.RowIndexNumber, cellThatsBeingEvaluated.ColumnIndexNumber);
+            ExpressionTree expressionTree = new ExpressionTree(cellThatsBeingEvaluated.Text.Substring(1), cellValuesByName);
+            List<string> cellsReferencedInExpression = expressionTree.getVariables();
 
+            // Subscribe to property changes in all cells the cell that is being evaluated is dependent on.
+            foreach (string variableCell in cellsReferencedInExpression)
+            {
+                // Convert name of cell into row and column values.
+                int columnIndex = cellName[0] - 65;
+                string rowIndex = string.Empty;
+                for (int j = 1; j < cellName.Count(); ++j)
+                {
+                    rowIndex += cellName[j];
+                }
+
+                this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[int.Parse(rowIndex), columnIndex].Add(cellName);
+            }
+
+            return expressionTree.Evaluate().ToString();
         }
 
         /// <summary>

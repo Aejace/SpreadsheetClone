@@ -67,8 +67,9 @@ namespace Cpts321
                 if (this.text != value)
                 {
                     this.text = value;
-                    this.NotifyPropertyChanged("Text");
                 }
+
+                this.NotifyPropertyChanged("Text");
             }
         }
 
