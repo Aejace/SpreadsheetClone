@@ -47,7 +47,7 @@ namespace Spreadsheet_Arlo_Jones_
             this.MainDataGridView.Name = "MainDataGridView";
             this.MainDataGridView.Size = new System.Drawing.Size(800, 450);
             this.MainDataGridView.TabIndex = 0;
-            this.MainDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.MainDataGridView_CellContentClick);
+            this.MainDataGridView.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.MainDataGridView_CellBeginEdit);
             this.MainDataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.MainDataGridView_CellEndEdit);
             // 
             // button1
@@ -73,11 +73,6 @@ namespace Spreadsheet_Arlo_Jones_
             ((System.ComponentModel.ISupportInitialize)(this.MainDataGridView)).EndInit();
             this.ResumeLayout(false);
 
-        }
-
-        private void MainDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

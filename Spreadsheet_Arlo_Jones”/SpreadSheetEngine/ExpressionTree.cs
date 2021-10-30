@@ -28,9 +28,9 @@ namespace Cpts321
         private Dictionary<char, Type> operatorDictionary = new Dictionary<char, Type>();
 
         /// <summary>
-        /// 
+        /// .
         /// </summary>
-        private List<string> variables;
+        private List<string> variables = new List<string>();
 
         /// <summary>
         /// The starting node in the expression tree.
@@ -147,6 +147,10 @@ namespace Cpts321
                     if (operandString != string.Empty)
                     {
                         nodeList.Add(nodeFactory.CreateNode(operandString)); // Create a node using the substring preceding the operator
+                        if (operandString.Any(x => char.IsLetter(x)))
+                        {
+                            this.variables.Add(operandString);
+                        }
                     }
 
                     nodeList.Add(nodeFactory.CreateNode(expression[operatorIndex].ToString())); // Create node using the operator character
@@ -158,6 +162,10 @@ namespace Cpts321
             if (expression.Length > 0)
             {
                 nodeList.Add(nodeFactory.CreateNode(expression)); // Creates a node for the last operand in the exspression
+                if (expression.Any(x => char.IsLetter(x)))
+                {
+                    this.variables.Add(expression);
+                }
             }
 
             // converts nodeList into an expression tree.
@@ -192,7 +200,8 @@ namespace Cpts321
         {
             Type operatorNodeType = typeof(OperatorNode);
 
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (var assembly in assemblies)
             {
                 IEnumerable<Type> operatorTypes =
                     assembly.GetTypes().Where(type => type.IsSubclassOf(operatorNodeType));

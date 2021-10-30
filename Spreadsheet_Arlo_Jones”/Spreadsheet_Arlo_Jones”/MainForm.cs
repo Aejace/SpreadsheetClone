@@ -55,14 +55,30 @@ namespace Spreadsheet_Arlo_Jones_
             this.MainDataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
 
             this.mainSpreadSheet.CellPropertyChanged += new PropertyChangedEventHandler(SpreadSheetChangedEventHandler);
+        }
 
-            void SpreadSheetChangedEventHandler(object cellSender, PropertyChangedEventArgs cellValue)
-            {
-                Cell cellWhosePropertyChanged = cellSender as Cell;
-                int rowName = cellWhosePropertyChanged.RowIndexNumber;
-                int columnName = cellWhosePropertyChanged.ColumnIndexNumber;
-                this.MainDataGridView.Rows[rowName].Cells[columnName].Value = cellWhosePropertyChanged.Value;
-            }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cellSender"></param>
+        /// <param name="cellValue"></param>
+        private void SpreadSheetChangedEventHandler(object cellSender, PropertyChangedEventArgs cellValue)
+        {
+            Cell cellWhosePropertyChanged = cellSender as Cell;
+            int rowName = cellWhosePropertyChanged.RowIndexNumber;
+            int columnName = cellWhosePropertyChanged.ColumnIndexNumber;
+            this.MainDataGridView.Rows[rowName].Cells[columnName].Value = cellWhosePropertyChanged.Value;
+        }
+
+        /// <summary>
+        /// Updates the appropriate cell's text in the spreadsheet.
+        /// </summary>
+        /// <param name="sender"> A data grid view cell. </param>
+        /// <param name="e"> Contains the row and column index of the sender call. </param>
+        private void MainDataGridView_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            DataGridViewCell cellThatsBeingChanged = this.MainDataGridView.CurrentCell;
+            cellThatsBeingChanged.Value = this.mainSpreadSheet.GetCellByRowAndColumn(e.RowIndex, e.ColumnIndex).Text;
         }
 
         /// <summary>

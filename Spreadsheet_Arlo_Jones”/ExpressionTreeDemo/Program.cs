@@ -5,6 +5,7 @@
 namespace ExpressionTreeDemo
 {
     using System;
+    using System.Collections.Generic;
     using Cpts321;
 
     /// <summary>
@@ -46,7 +47,8 @@ namespace ExpressionTreeDemo
         private static void Main()
         {
             string expression = string.Empty; // Default expression
-            ExpressionTree tree = new ExpressionTree(expression);
+            Dictionary<string, double> defaultDictionary = new Dictionary<string, double>();
+            ExpressionTree tree = new ExpressionTree(expression, defaultDictionary);
 
             DisplayMenu(expression);
             string userInput = Console.ReadLine(); // Get intial user input.
@@ -58,7 +60,7 @@ namespace ExpressionTreeDemo
                 {
                     case "1":
                         expression = Console.ReadLine();
-                        tree = new ExpressionTree(expression);
+                        tree = new ExpressionTree(expression, defaultDictionary);
                         break;
 
                     case "2":
