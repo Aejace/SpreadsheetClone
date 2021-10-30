@@ -28,6 +28,11 @@ namespace Cpts321
         private Dictionary<char, Type> operatorDictionary = new Dictionary<char, Type>();
 
         /// <summary>
+        /// .
+        /// </summary>
+        private List<string> variables = new List<string>();
+
+        /// <summary>
         /// The starting node in the expression tree.
         /// </summary>
         private Node root;
@@ -36,9 +41,11 @@ namespace Cpts321
         /// Initializes a new instance of the <see cref="ExpressionTree"/> class.
         /// </summary>
         /// <param name="expression"> The string that will be parsed into nodes to create the expression tree. </param>
-        public ExpressionTree(string expression)
+        /// <param name="predefinedVariableDictionary"> Dictionary of values for variables defined before the instantiation of expression tree. </param>
+        public ExpressionTree(string expression, Dictionary<string, double> predefinedVariableDictionary)
         {
             this.TraverseAvailableOperators((op, type) => this.operatorDictionary.Add(op, type)); // Adds operator characters and thier coresponding node type to operatorDictionary.
+            this.variableDictionary = predefinedVariableDictionary;
             this.root = this.BuildTree(expression); // Sets root to node returned by BuildTree
         }
 
@@ -62,6 +69,15 @@ namespace Cpts321
             }
 
             this.variableDictionary.Add(variableName, variableValue); // Add variable with associated value to dictionary.
+        }
+
+        /// <summary>
+        /// Returns list of variables relevant to the tree.
+        /// </summary>
+        /// <returns> A list of variables names contained in the expression tree. </returns>
+        public List<string> GetVariables()
+        {
+            return this.variables;
         }
 
         /// <summary>
@@ -131,6 +147,10 @@ namespace Cpts321
                     if (operandString != string.Empty)
                     {
                         nodeList.Add(nodeFactory.CreateNode(operandString)); // Create a node using the substring preceding the operator
+                        if (operandString.Any(x => char.IsLetter(x)))
+                        {
+                            this.variables.Add(operandString);
+                        }
                     }
 
                     nodeList.Add(nodeFactory.CreateNode(expression[operatorIndex].ToString())); // Create node using the operator character
@@ -142,6 +162,10 @@ namespace Cpts321
             if (expression.Length > 0)
             {
                 nodeList.Add(nodeFactory.CreateNode(expression)); // Creates a node for the last operand in the exspression
+                if (expression.Any(x => char.IsLetter(x)))
+                {
+                    this.variables.Add(expression);
+                }
             }
 
             // converts nodeList into an expression tree.
@@ -176,7 +200,8 @@ namespace Cpts321
         {
             Type operatorNodeType = typeof(OperatorNode);
 
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (var assembly in assemblies)
             {
                 IEnumerable<Type> operatorTypes =
                     assembly.GetTypes().Where(type => type.IsSubclassOf(operatorNodeType));
