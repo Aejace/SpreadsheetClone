@@ -54,14 +54,14 @@ namespace Spreadsheet_Arlo_Jones_
 
             this.MainDataGridView.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
 
-            this.mainSpreadSheet.CellPropertyChanged += new PropertyChangedEventHandler(SpreadSheetChangedEventHandler);
+            this.mainSpreadSheet.CellPropertyChanged += new PropertyChangedEventHandler(this.SpreadSheetChangedEventHandler);
         }
 
         /// <summary>
-        /// 
+        /// Updates the UI when a cell value changes.
         /// </summary>
-        /// <param name="cellSender"></param>
-        /// <param name="cellValue"></param>
+        /// <param name="cellSender"> The cell that changed in spreadsheet. </param>
+        /// <param name="cellValue"> The value of the cell that changed. </param>
         private void SpreadSheetChangedEventHandler(object cellSender, PropertyChangedEventArgs cellValue)
         {
             Cell cellWhosePropertyChanged = cellSender as Cell;

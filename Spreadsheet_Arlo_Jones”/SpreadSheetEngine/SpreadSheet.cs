@@ -70,7 +70,6 @@ namespace Cpts321
                     this.cellArray[i, j] = new SpreadSheetCell(i, j);
                     this.cellArray[i, j].PropertyChanged += new PropertyChangedEventHandler(this.CellPropertyChangedEventHandler); // Subscribe to each SpreadSheetCell's property changed event
                     string columnLetter = Convert.ToChar(i + 65).ToString();
-                    // this.cellNameandValueDictionary.Add(columnLetter += (j + 1).ToString(), Convert.ToDouble(this.cellArray[i, j].Value));
                 }
             }
         }
@@ -92,11 +91,11 @@ namespace Cpts321
         }
 
         /// <summary>
-        /// .
+        /// Returns a cell name given it's row and column indexes.
         /// </summary>
-        /// <param name="rowIndex"></param>
-        /// <param name="columnIndex"></param>
-        /// <returns></returns>
+        /// <param name="rowIndex"> The row index of the cell. </param>
+        /// <param name="columnIndex"> The column index of the cell. </param>
+        /// <returns> The cell name Ex. "A23". </returns>
         public string GetCellName(int rowIndex, int columnIndex)
         {
             string columnName = Convert.ToChar(columnIndex + 65).ToString();
@@ -157,7 +156,6 @@ namespace Cpts321
             }
             else if (e.PropertyName == "Value")
             { // If the property that changed was the cell's value.
-                
                 string cellWhosePropertyChangedName = this.GetCellName(cellWhosePropertyChanged.RowIndexNumber, cellWhosePropertyChanged.ColumnIndexNumber);
                 if (double.TryParse(cellWhosePropertyChanged.Value, out double cellValue))
                 {
@@ -173,6 +171,7 @@ namespace Cpts321
                 for (int i = 0; i < listCount; ++i)
                 {
                     string cellName = this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[cellWhosePropertyChanged.RowIndexNumber, cellWhosePropertyChanged.ColumnIndexNumber][i];
+
                     // Convert name of cell into row and column values.
                     int columnIndex = cellName[0] - 65;
                     string rowIndex = string.Empty;
@@ -190,11 +189,11 @@ namespace Cpts321
         }
 
         /// <summary>
-        /// .
+        /// Evaluates a cell to find it's value.
         /// </summary>
-        /// <param name="cellThatsBeingEvaluated"></param>
-        /// <param name="cellValuesByName"></param>
-        /// <returns></returns>
+        /// <param name="cellThatsBeingEvaluated"> The cell thats being evaluated. </param>
+        /// <param name="cellValuesByName"> Dictionary of cell name keys and value value pairs. </param>
+        /// <returns> Returns the value of a cell's text expression. </returns>
         private string Evaluate(Cell cellThatsBeingEvaluated, Dictionary<string, double> cellValuesByName)
         {
             string cellName = this.GetCellName(cellThatsBeingEvaluated.RowIndexNumber, cellThatsBeingEvaluated.ColumnIndexNumber);
@@ -215,7 +214,14 @@ namespace Cpts321
                 this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[int.Parse(rowIndex), columnIndex].Add(cellName);
             }
 
-            return expressionTree.Evaluate().ToString();
+            try
+            {
+                return expressionTree.Evaluate().ToString();
+            }
+            catch (KeyNotFoundException)
+            {
+                return "Invalid Expression";
+            }
         }
 
         /// <summary>
