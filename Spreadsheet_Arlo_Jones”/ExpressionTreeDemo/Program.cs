@@ -32,13 +32,14 @@ namespace ExpressionTreeDemo
         /// <param name="tree"> tree contains a dictionary it uses to evaluate variable nodes with. </param>
         private static void SetVariableValue(ExpressionTree tree)
         {
-            string variable;
-            double value;
             Console.WriteLine("Enter variable name: ");
-            variable = Console.ReadLine();
+            var variable = Console.ReadLine();
             Console.WriteLine("Enter variable value: ");
-            value = Convert.ToDouble(Console.ReadLine());
-            tree.SetVariable(variable.ToString(), value);
+            var value = Convert.ToDouble(Console.ReadLine());
+            if (variable != null)
+            {
+                tree.SetVariable(variable.ToString(), value);
+            }
         }
 
         /// <summary>
@@ -46,12 +47,12 @@ namespace ExpressionTreeDemo
         /// </summary>
         private static void Main()
         {
-            string expression = string.Empty; // Default expression
-            Dictionary<string, double> defaultDictionary = new Dictionary<string, double>();
-            ExpressionTree tree = new ExpressionTree(expression, defaultDictionary);
+            var expression = string.Empty; // Default expression
+            var defaultDictionary = new Dictionary<string, double>();
+            var tree = new ExpressionTree(expression, defaultDictionary);
 
             DisplayMenu(expression);
-            string userInput = Console.ReadLine(); // Get intial user input.
+            var userInput = Console.ReadLine(); // Get initial user input.
 
             // Menu options
             while (userInput != "4")

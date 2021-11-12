@@ -46,6 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command\Command.cs" />
+    <Compile Include="Command\ICommand.cs" />
+    <Compile Include="Command\Reciever.cs" />
+    <Compile Include="Command\TextCommand.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

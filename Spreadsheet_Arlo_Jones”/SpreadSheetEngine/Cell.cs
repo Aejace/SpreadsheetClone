@@ -4,7 +4,6 @@
 
 namespace Cpts321
 {
-    using System;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
 
@@ -16,16 +15,6 @@ namespace Cpts321
     public abstract class Cell : INotifyPropertyChanged
     {
         /// <summary>
-        /// The row number of a cell.
-        /// </summary>
-        private readonly int rowIndexNumber;
-
-        /// <summary>
-        /// The column number of a cell.
-        /// </summary>
-        private readonly int columnIndexNumber;
-
-        /// <summary>
         /// The text that is typed into a cell.
         /// </summary>
         private string text = string.Empty;
@@ -36,15 +25,20 @@ namespace Cpts321
         private string value = string.Empty;
 
         /// <summary>
+        /// The background color of the cell, initialized to white (0xFFFFFFFF).
+        /// </summary>
+        private uint bgColor = uint.MaxValue;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Cell"/> class.
         /// </summary>
         /// <param name="rowNum"> The row number of a cell. </param>
         /// <param name="columnNum"> The column number of a cell. </param>
-        public Cell(int rowNum, int columnNum)
+        protected Cell(int rowNum, int columnNum)
         {
             // Row and Column are set in the constructor, and then never changed.
-            this.rowIndexNumber = rowNum;
-            this.columnIndexNumber = columnNum;
+            this.RowIndexNumber = rowNum;
+            this.ColumnIndexNumber = columnNum;
         }
 
         /// <summary>
@@ -57,18 +51,11 @@ namespace Cpts321
         /// </summary>
         public string Text
         {
-            get
-            {
-                return this.text;
-            }
+            get => this.text;
 
             set
             {
-                if (this.text != value)
-                {
-                    this.text = value;
-                }
-
+                this.text = value;
                 this.NotifyPropertyChanged("Text");
             }
         }
@@ -78,42 +65,48 @@ namespace Cpts321
         /// </summary>
         public string Value
         {
-            get
-            {
-                return this.value;
-            }
+            get => this.value;
 
             internal set
             {
-                if (this.value != value)
+                if (this.value == value)
                 {
-                    this.value = value;
-                    this.NotifyPropertyChanged("Value");
+                    return;
                 }
+
+                this.value = value;
+                this.NotifyPropertyChanged("Value");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the background color of a cell.
+        /// </summary>
+        public uint BGColor
+        {
+            get => this.bgColor;
+
+            set
+            {
+                if (this.bgColor == value)
+                {
+                    return;
+                }
+
+                this.bgColor = value;
+                this.NotifyPropertyChanged("Color");
             }
         }
 
         /// <summary>
         /// Gets columnIndexNumber.
         /// </summary>
-        public int ColumnIndexNumber
-        {
-            get
-            {
-                return this.columnIndexNumber;
-            }
-        }
+        public int ColumnIndexNumber { get; }
 
         /// <summary>
         /// Gets rowIndexNumber.
         /// </summary>
-        public int RowIndexNumber
-        {
-            get
-            {
-                return this.rowIndexNumber;
-            }
-        }
+        public int RowIndexNumber { get; }
 
         /// <summary>
         /// NotifyPropertyChanged method inherited from the INotifyPropertyChanged interface.
