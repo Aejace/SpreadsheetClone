@@ -42,6 +42,11 @@ namespace Cpts321
         private readonly int numberOfColumns;
 
         /// <summary>
+        /// An instantiation of UndoAndRedo class, allows spreadsheet to store cell data to undo and redo changes to those cells.
+        /// </summary>
+        private readonly UndoAndRedo undoRedo = new UndoAndRedo();
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="SpreadSheet"/> class.
         /// </summary>
         /// <param name="numRows"> The number of rows to be generated in the spreadsheet. </param>
@@ -99,7 +104,7 @@ namespace Cpts321
         {
             var columnName = Convert.ToChar(columnIndex + 65).ToString();
             var rowName = rowIndex.ToString();
-            return columnName += rowName;
+            return columnName + rowName;
         }
 
         /// <summary>
@@ -118,6 +123,50 @@ namespace Cpts321
         public int ColumnCount()
         {
             return this.numberOfColumns;
+        }
+
+        /// <summary>
+        /// Sets the text of a specific cell in cell array.
+        /// </summary>
+        /// <param name="rowIndex"> The row index of a cell in cell array. </param>
+        /// <param name="columnIndex"> The column index of a cell in cell array. </param>
+        /// <param name="text"> New text value for the cell. </param>
+        public void SetCellText(int rowIndex, int columnIndex, string text)
+        {
+            var command = new CellTextCommand(this.cellArray[rowIndex, columnIndex], this.cellArray[rowIndex, columnIndex].Text);
+            var commandList = new List<ICommand> { command };
+            this.AddUndo(commandList);
+            this.cellArray[rowIndex, columnIndex].Text = text;
+        }
+
+        /// <summary>
+        /// Sets the color of a specific cell in cell array.
+        /// </summary>
+        /// <param name="rowIndex"> The row index of a cell in cell array. </param>
+        /// <param name="columnIndex"> The column index of a cell in cell array. </param>
+        /// <param name="color"> New color value for the cell. </param>
+        public void SetCellColor(int rowIndex, int columnIndex, uint color)
+        {
+            this.cellArray[rowIndex, columnIndex].BGColor = color;
+        }
+
+        /// <summary>
+        /// Adds a list of ICommands to undoRedo.
+        /// </summary>
+        /// <param name="commands"> List of ICommand objects to be added to undo stack. </param>
+        public void AddUndo(List<ICommand> commands)
+        {
+            this.undoRedo.AddUndo(commands);
+        }
+
+        public void Undo()
+        {
+            this.undoRedo.Undo();
+        }
+
+        public void Redo()
+        {
+            this.undoRedo.Redo();
         }
 
         /// <summary>
@@ -198,10 +247,10 @@ namespace Cpts321
 
                                 // Evaluate the cells text and update it's value.
                                 this.cellArray[int.Parse(rowIndex), columnIndex].Value = this.Evaluate(this.GetCellByRowAndColumn(int.Parse(rowIndex), columnIndex), this.cellNameAndValueDictionary);
-                                this.NotifyPropertyChanged(cellWhosePropertyChanged, "Value"); // Notify subscribers (UI)
                             }
                         }
 
+                        this.NotifyPropertyChanged(cellWhosePropertyChanged, "Value"); // Notify subscribers (UI)
                         break;
                     }
 
@@ -214,7 +263,7 @@ namespace Cpts321
         /// <summary>
         /// Evaluates a cell to find it's value.
         /// </summary>
-        /// <param name="cellThatIsBeingEvaluated"> The cell thats being evaluated. </param>
+        /// <param name="cellThatIsBeingEvaluated"> The cell that's being evaluated. </param>
         /// <param name="cellValuesByName"> Dictionary of cell name keys and value value pairs. </param>
         /// <returns> Returns the value of a cell's text expression. </returns>
         private string Evaluate(Cell cellThatIsBeingEvaluated, Dictionary<string, double> cellValuesByName)

@@ -6,7 +6,6 @@ namespace Spreadsheet_Arlo_Jones_
 {
     using Cpts321;
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing;
     using System.Windows.Forms;
@@ -20,11 +19,6 @@ namespace Spreadsheet_Arlo_Jones_
         /// SpreadSheet.
         /// </summary>
         private readonly SpreadSheet mainSpreadSheet;
-
-        //private Stack<List<Spreadsheet_Arlo_Jones_.Command.Reciever>> undoStack;
-
-        //private Stack<List<Spreadsheet_Arlo_Jones_.Command.Reciever>> redoStack;
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainForm"/> class.
@@ -103,26 +97,7 @@ namespace Spreadsheet_Arlo_Jones_
         private void MainDataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             var cellWhoseTextChanged = this.MainDataGridView.CurrentCell;
-
-            // Check if actually changing the text of the cell.
-            var cell = this.mainSpreadSheet.GetCellByRowAndColumn(e.RowIndex, e.ColumnIndex);
-            //if (cell.Text != cellWhoseTextChanged.Value.ToString())
-            //{
-            //    // Create command object
-            //    // Add command to undo stack
-            //    this.undoStack.Push(
-            //        new List<Reciever>()
-            //        {
-            //            new Reciever
-            //            {
-            //                Command = new TextCommand(cell),
-            //                Val = cell.Text,
-            //            },
-            //        });
-            //}
-
-            // If yes, create a command object with its current text and put it on the undo stack.
-            this.mainSpreadSheet.GetCellByRowAndColumn(e.RowIndex, e.ColumnIndex).Text = cellWhoseTextChanged.Value.ToString();
+            this.mainSpreadSheet.SetCellText(e.RowIndex, e.ColumnIndex, cellWhoseTextChanged.Value.ToString());
         }
 
         /// <summary>
@@ -150,10 +125,10 @@ namespace Spreadsheet_Arlo_Jones_
         }
 
         /// <summary>
-        /// .
+        /// Allows user to change the background color of a cell or set of selected cells.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender"> Change Cell Color button. </param>
+        /// <param name="e"> Information about event. </param>
         private void ChangeCellColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var colorDialog = new ColorDialog();
@@ -165,28 +140,28 @@ namespace Spreadsheet_Arlo_Jones_
             foreach (DataGridViewCell cell in this.MainDataGridView.SelectedCells)
             {
                 var cellThatIsBeingChanged = this.mainSpreadSheet.GetCellByRowAndColumn(cell.RowIndex, cell.ColumnIndex);
-                cellThatIsBeingChanged.BGColor = (uint)colorDialog.Color.ToArgb();
+                this.mainSpreadSheet.SetCellColor(cell.RowIndex, cell.ColumnIndex, (uint)colorDialog.Color.ToArgb());
             }
         }
 
         /// <summary>
-        /// .
+        /// Tells the spreadsheet to undo it's most recent action.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender"> The undo button that was clicked. </param>
+        /// <param name="e"> Information about event. </param>
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            mainSpreadSheet.Undo();
         }
 
         /// <summary>
-        /// .
+        /// Tells the spreadsheet to redo it's most recently undone action.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender"> The redo button that was clicked. </param>
+        /// <param name="e"> Information about event. </param>
         private void redoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            this.mainSpreadSheet.Redo();
         }
     }
 }
