@@ -170,7 +170,12 @@ namespace Spreadsheet_Arlo_Jones_
             this.mainSpreadSheet.Redo();
         }
 
-        private void editToolStripMenuItem_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Configures drop down buttons on click.
+        /// </summary>
+        /// <param name="sender"> The edit button that was clicked. </param>
+        /// <param name="e"> Information about event. </param>
+        private void EditToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (this.mainSpreadSheet.GetUndoCount() == 0)
             {

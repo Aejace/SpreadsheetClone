@@ -10,6 +10,11 @@ namespace Cpts321
     public class CellColorCommand : ICommand
     {
         /// <summary>
+        /// A summary text about what is changed when command is executed, sent to the UI.
+        /// </summary>
+        private const string UserInterfaceText = "cell color change";
+
+        /// <summary>
         /// Reference to cell execute will act upon.
         /// </summary>
         private readonly Cell cell;
@@ -18,11 +23,6 @@ namespace Cpts321
         /// A previous color of the cell.
         /// </summary>
         private readonly uint color;
-
-        /// <summary>
-        /// A summary text about what is changed when command is executed, sent to the UI.
-        /// </summary>
-        private readonly string userInterfaceText = "cell color change";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CellColorCommand"/> class.
@@ -36,12 +36,12 @@ namespace Cpts321
         }
 
         /// <summary>
-        /// .
+        /// Returns a summary text about what is changed when command is executed.
         /// </summary>
-        /// <returns></returns>
+        /// <returns> A summary text about what is changed when command is executed. </returns>
         public string GetUserInterfaceText()
         {
-            return this.userInterfaceText;
+            return UserInterfaceText;
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Cpts321
         /// Creates a command object that can undo execute.
         /// </summary>
         /// <returns> A CellColorCommand, used to redo. </returns>
-        public ICommand createRedo()
+        public ICommand CreateRedo()
         {
             var redoCommand = new CellColorCommand(this.cell, this.cell.BGColor);
             return redoCommand;

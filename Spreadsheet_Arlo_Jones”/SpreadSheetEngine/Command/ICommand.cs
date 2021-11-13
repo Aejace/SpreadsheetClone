@@ -24,6 +24,6 @@ namespace Cpts321
         /// Creates a new command that can undo execute.
         /// </summary>
         /// <returns> A command object that's execute can undo the execute of this object. </returns>
-        ICommand createRedo();
+        ICommand CreateRedo();
     }
 }

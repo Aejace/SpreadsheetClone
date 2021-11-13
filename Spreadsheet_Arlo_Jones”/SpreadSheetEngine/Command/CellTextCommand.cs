@@ -10,6 +10,11 @@ namespace Cpts321
     public class CellTextCommand : ICommand
     {
         /// <summary>
+        /// A summary text about what is changed when command is executed, sent to the UI.
+        /// </summary>
+        private const string UserInterfaceText = "cell text change";
+
+        /// <summary>
         /// Reference to cell execute will act upon.
         /// </summary>
         private readonly Cell cell;
@@ -18,11 +23,6 @@ namespace Cpts321
         /// A previous text of the cell.
         /// </summary>
         private readonly string text;
-
-        /// <summary>
-        /// A summary text about what is changed when command is executed, sent to the UI.
-        /// </summary>
-        public readonly string userInterfaceText = "cell text change";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CellTextCommand"/> class.
@@ -36,12 +36,12 @@ namespace Cpts321
         }
 
         /// <summary>
-        /// .
+        /// Returns a summary text about what is changed when command is executed.
         /// </summary>
-        /// <returns></returns>
+        /// <returns> A summary text about what is changed when command is executed. </returns>
         public string GetUserInterfaceText()
         {
-            return this.userInterfaceText;
+            return UserInterfaceText;
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Cpts321
         /// Creates a command object that can undo execute.
         /// </summary>
         /// <returns> A CellTextCommand, used to redo. </returns>
-        public ICommand createRedo()
+        public ICommand CreateRedo()
         {
             var redoCommand = new CellTextCommand(this.cell, this.cell.Text);
             return redoCommand;

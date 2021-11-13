@@ -41,18 +41,18 @@ namespace Cpts321
         }
 
         /// <summary>
-        /// .
+        /// Returns the UserInterfaceText string of the top most command object on the undo stack.
         /// </summary>
-        /// <returns></returns>
+        /// <returns> the UserInterfaceText string of the top most command object on the undo stack. </returns>
         public string GetUndoCommandUIString()
         {
             return this.undoStack.Peek().ElementAt(0).GetUserInterfaceText();
         }
 
         /// <summary>
-        /// .
+        /// Returns the UserInterfaceText string of the top most command object on the redo stack.
         /// </summary>
-        /// <returns></returns>
+        /// <returns> the UserInterfaceText string of the top most command object on the redo stack. </returns>
         public string GetRedoCommandUIString()
         {
             return this.redoStack.Peek().ElementAt(0).GetUserInterfaceText();
@@ -74,7 +74,7 @@ namespace Cpts321
         public void Undo()
         {
             var undoCommands = this.undoStack.Pop();
-            var redoCommands = undoCommands.Select(command => command.createRedo()).ToList();
+            var redoCommands = undoCommands.Select(command => command.CreateRedo()).ToList();
             this.redoStack.Push(redoCommands);
             foreach (var command in undoCommands)
             {
@@ -88,7 +88,7 @@ namespace Cpts321
         public void Redo()
         {
             var redoCommands = this.redoStack.Pop();
-            var undoCommands = redoCommands.Select(command => command.createRedo()).ToList();
+            var undoCommands = redoCommands.Select(command => command.CreateRedo()).ToList();
             this.undoStack.Push(undoCommands);
             foreach (var command in redoCommands)
             {
