@@ -4,11 +4,12 @@
 
 namespace Spreadsheet_Arlo_Jones_
 {
-    using Cpts321;
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing;
     using System.Windows.Forms;
+    using Cpts321;
 
     /// <summary>
     /// Partial class definition of MainForm, allows new fields and methods to be added to the class.
@@ -137,11 +138,16 @@ namespace Spreadsheet_Arlo_Jones_
                 return;
             }
 
+            var rowIndexes = new List<int>();
+            var columnIndexes = new List<int>();
+
             foreach (DataGridViewCell cell in this.MainDataGridView.SelectedCells)
             {
-                var cellThatIsBeingChanged = this.mainSpreadSheet.GetCellByRowAndColumn(cell.RowIndex, cell.ColumnIndex);
-                this.mainSpreadSheet.SetCellColor(cell.RowIndex, cell.ColumnIndex, (uint)colorDialog.Color.ToArgb());
+                rowIndexes.Add(cell.RowIndex);
+                columnIndexes.Add(cell.ColumnIndex);
             }
+
+            this.mainSpreadSheet.SetCellColor(rowIndexes, columnIndexes, (uint)colorDialog.Color.ToArgb());
         }
 
         /// <summary>
@@ -149,9 +155,9 @@ namespace Spreadsheet_Arlo_Jones_
         /// </summary>
         /// <param name="sender"> The undo button that was clicked. </param>
         /// <param name="e"> Information about event. </param>
-        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        private void UndoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            mainSpreadSheet.Undo();
+            this.mainSpreadSheet.Undo();
         }
 
         /// <summary>
@@ -159,9 +165,32 @@ namespace Spreadsheet_Arlo_Jones_
         /// </summary>
         /// <param name="sender"> The redo button that was clicked. </param>
         /// <param name="e"> Information about event. </param>
-        private void redoToolStripMenuItem_Click(object sender, EventArgs e)
+        private void RedoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.mainSpreadSheet.Redo();
+        }
+
+        private void editToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.mainSpreadSheet.GetUndoCount() == 0)
+            {
+                this.undoToolStripMenuItem.Enabled = false;
+            }
+            else
+            {
+                this.undoToolStripMenuItem.Enabled = true;
+                this.undoToolStripMenuItem.Text = "Undo " + this.mainSpreadSheet.GetTopUndoString();
+            }
+
+            if (this.mainSpreadSheet.GetRedoCount() == 0)
+            {
+                this.redoToolStripMenuItem.Enabled = false;
+            }
+            else
+            {
+                this.redoToolStripMenuItem.Enabled = true;
+                this.redoToolStripMenuItem.Text = "Redo " + this.mainSpreadSheet.GetTopRedoString();
+            }
         }
     }
 }

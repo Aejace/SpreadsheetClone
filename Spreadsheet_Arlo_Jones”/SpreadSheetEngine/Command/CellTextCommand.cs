@@ -22,7 +22,7 @@ namespace Cpts321
         /// <summary>
         /// A summary text about what is changed when command is executed, sent to the UI.
         /// </summary>
-        private readonly string userInterfaceText = "cell text change";
+        public readonly string userInterfaceText = "cell text change";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CellTextCommand"/> class.
@@ -33,6 +33,15 @@ namespace Cpts321
         {
             this.cell = cell;
             this.text = text;
+        }
+
+        /// <summary>
+        /// .
+        /// </summary>
+        /// <returns></returns>
+        public string GetUserInterfaceText()
+        {
+            return this.userInterfaceText;
         }
 
         /// <summary>

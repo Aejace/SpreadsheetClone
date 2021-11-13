@@ -7,7 +7,7 @@ namespace Cpts321
     /// <summary>
     /// Stores a previous background color value for a cell. Sets that cell's background to it's previous value when command is executed.
     /// </summary>
-    public class CellColorCommand
+    public class CellColorCommand : ICommand
     {
         /// <summary>
         /// Reference to cell execute will act upon.
@@ -36,11 +36,30 @@ namespace Cpts321
         }
 
         /// <summary>
-        /// Sets cell text property to the text stored in this command.
+        /// .
+        /// </summary>
+        /// <returns></returns>
+        public string GetUserInterfaceText()
+        {
+            return this.userInterfaceText;
+        }
+
+        /// <summary>
+        /// Sets cell color property to the color stored in this command.
         /// </summary>
         public void Execute()
         {
             this.cell.BGColor = this.color;
+        }
+
+        /// <summary>
+        /// Creates a command object that can undo execute.
+        /// </summary>
+        /// <returns> A CellColorCommand, used to redo. </returns>
+        public ICommand createRedo()
+        {
+            var redoCommand = new CellColorCommand(this.cell, this.cell.BGColor);
+            return redoCommand;
         }
     }
 }

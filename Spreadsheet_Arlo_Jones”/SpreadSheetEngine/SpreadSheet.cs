@@ -42,7 +42,7 @@ namespace Cpts321
         private readonly int numberOfColumns;
 
         /// <summary>
-        /// An instantiation of UndoAndRedo class, allows spreadsheet to store cell data to undo and redo changes to those cells.
+        /// An instantiation of UndoAndRedo class, allows spreadsheet to store cell data so it can undo and redo changes to those cells.
         /// </summary>
         private readonly UndoAndRedo undoRedo = new UndoAndRedo();
 
@@ -73,7 +73,6 @@ namespace Cpts321
                 {
                     this.cellArray[i, j] = new SpreadSheetCell(i, j);
                     this.cellArray[i, j].PropertyChanged += this.CellPropertyChangedEventHandler; // Subscribe to each SpreadSheetCell's property changed event
-                    var columnLetter = Convert.ToChar(i + 65).ToString();
                 }
             }
         }
@@ -142,12 +141,20 @@ namespace Cpts321
         /// <summary>
         /// Sets the color of a specific cell in cell array.
         /// </summary>
-        /// <param name="rowIndex"> The row index of a cell in cell array. </param>
-        /// <param name="columnIndex"> The column index of a cell in cell array. </param>
+        /// <param name="rowIndexes"> List of row indexes of cells in cell array. </param>
+        /// <param name="columnIndexes"> List of column indexes of cells in cell array. </param>
         /// <param name="color"> New color value for the cell. </param>
-        public void SetCellColor(int rowIndex, int columnIndex, uint color)
+        public void SetCellColor(List<int> rowIndexes, List<int> columnIndexes, uint color)
         {
-            this.cellArray[rowIndex, columnIndex].BGColor = color;
+            var commandList = new List<ICommand>();
+            for (var i = 0; i < rowIndexes.Count; ++i)
+            {
+                var command = new CellColorCommand(this.cellArray[rowIndexes[i], columnIndexes[i]], this.cellArray[rowIndexes[i], columnIndexes[i]].BGColor);
+                commandList.Add(command);
+                this.cellArray[rowIndexes[i], columnIndexes[i]].BGColor = color;
+            }
+
+            this.AddUndo(commandList);
         }
 
         /// <summary>
@@ -159,14 +166,56 @@ namespace Cpts321
             this.undoRedo.AddUndo(commands);
         }
 
+        /// <summary>
+        /// Undoes most recent change made to spreadsheet.
+        /// </summary>
         public void Undo()
         {
             this.undoRedo.Undo();
         }
 
+        /// <summary>
+        /// Redoes actions undone by Undo.
+        /// </summary>
         public void Redo()
         {
             this.undoRedo.Redo();
+        }
+
+        /// <summary>
+        /// Gets count of items in undoStack in undoRedo.
+        /// </summary>
+        /// <returns> Count if items in undoStack in undoRedo. </returns>
+        public int GetUndoCount()
+        {
+            return this.undoRedo.UndoCount();
+        }
+
+        /// <summary>
+        /// Gets count of items in redoStack in undoRedo.
+        /// </summary>
+        /// <returns> Count if items in redoStack in undoRedo. </returns>
+        public int GetRedoCount()
+        {
+            return this.undoRedo.RedoCount();
+        }
+
+        /// <summary>
+        /// Gets a string indicating what undoing the top undo item will change.
+        /// </summary>
+        /// <returns> String indicating what undoing the top undo item will change. </returns>
+        public string GetTopUndoString()
+        {
+            return this.undoRedo.GetUndoCommandUIString();
+        }
+
+        /// <summary>
+        /// Gets a string indicating what redoing the top redo item will change.
+        /// </summary>
+        /// <returns> String indicating what redoing the top redo item will change. </returns>
+        public string GetTopRedoString()
+        {
+            return this.undoRedo.GetRedoCommandUIString();
         }
 
         /// <summary>

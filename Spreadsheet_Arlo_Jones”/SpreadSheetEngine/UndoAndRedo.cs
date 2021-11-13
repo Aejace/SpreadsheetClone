@@ -20,7 +20,43 @@ namespace Cpts321
         /// <summary>
         /// Stack of lists of command objects, Embodies a history of recently undone items.
         /// </summary>
-        private Stack<List<ICommand>> redoStack;
+        private Stack<List<ICommand>> redoStack = new Stack<List<ICommand>>();
+
+        /// <summary>
+        /// Gets count of items in undoStack.
+        /// </summary>
+        /// <returns> A count of items in undoStack. </returns>
+        public int UndoCount()
+        {
+            return this.undoStack.Count();
+        }
+
+        /// <summary>
+        /// Gets count of items in redoStack.
+        /// </summary>
+        /// <returns> A count of items in redoStack. </returns>
+        public int RedoCount()
+        {
+            return this.redoStack.Count();
+        }
+
+        /// <summary>
+        /// .
+        /// </summary>
+        /// <returns></returns>
+        public string GetUndoCommandUIString()
+        {
+            return this.undoStack.Peek().ElementAt(0).GetUserInterfaceText();
+        }
+
+        /// <summary>
+        /// .
+        /// </summary>
+        /// <returns></returns>
+        public string GetRedoCommandUIString()
+        {
+            return this.redoStack.Peek().ElementAt(0).GetUserInterfaceText();
+        }
 
         /// <summary>
         /// Adds a list of commands to the undo stack.
