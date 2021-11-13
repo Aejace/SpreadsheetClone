@@ -7,8 +7,6 @@ namespace Cpts321
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using Cpts321.ExpressionTreeNodes;
 
     /// <summary>
@@ -19,12 +17,12 @@ namespace Cpts321
         /// <summary>
         /// Dictionary containing key value pairs for variables names and what value they represent.
         /// </summary>
-        private Dictionary<string, double> expressionTreeVariableDictionary;
+        private readonly Dictionary<string, double> expressionTreeVariableDictionary;
 
         /// <summary>
         /// Dictionary containing key value pairs for variables names and what value they represent.
         /// </summary>
-        private Dictionary<char, Type> expressionTreeOperatorDictionary;
+        private readonly Dictionary<char, Type> expressionTreeOperatorDictionary;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NodeFactory"/> class.
@@ -51,22 +49,25 @@ namespace Cpts321
                 return null;
             }
 
-            bool result = nodeString.Any(x => char.IsLetter(x)); // Result will be set to true if nodeString contains any letters.
-            if (result == true)
+            var result = nodeString.Any(char.IsLetter); // Result will be set to true if nodeString contains any letters.
+            if (result)
             {
-                return new VariableNode(nodeString, this.expressionTreeVariableDictionary); // Initalize a new variable node.
-            }
-            else if (char.IsNumber(nodeString[0]))
-            {
-                return new ConstantNode(nodeString); // Initalize a new constant Node
-            }
-            else if (this.expressionTreeOperatorDictionary.ContainsKey(nodeString[0]))
-            { // If operator is recognized, create a node of the appropriate type.
-                object operatorNodeObject = Activator.CreateInstance(this.expressionTreeOperatorDictionary[nodeString[0]]);
-                return (Node)operatorNodeObject;
+                return new VariableNode(nodeString, this.expressionTreeVariableDictionary); // Initialize a new variable node.
             }
 
-            return null;
+            if (char.IsNumber(nodeString[0]))
+            {
+                return new ConstantNode(nodeString); // Initialize a new constant Node
+            }
+
+            if (!this.expressionTreeOperatorDictionary
+                .ContainsKey(nodeString[0]))
+            {
+                return null; // If operator is recognized, create a node of the appropriate type.
+            }
+
+            var operatorNodeObject = Activator.CreateInstance(this.expressionTreeOperatorDictionary[nodeString[0]]);
+            return (Node)operatorNodeObject;
         }
     }
 }

@@ -5,20 +5,16 @@
 namespace Cpts321.ExpressionTreeNodes
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     /// <summary>
-    /// Constant node contains a double the represents a constant value in the exspression to be evaluated.
+    /// Constant node contains a double the represents a constant value in the expression to be evaluated.
     /// </summary>
     internal class ConstantNode : Node
     {
         /// <summary>
         /// The value of the node.
         /// </summary>
-        private double value;
+        private readonly double value;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConstantNode"/> class.
@@ -27,7 +23,7 @@ namespace Cpts321.ExpressionTreeNodes
         internal ConstantNode(string valueString)
         {
             this.value = Convert.ToDouble(valueString); // Set value
-            this.Weight = 0; // Weight is zero. Constant nodes dont have a precedence they should be operated on, but all nodes will be checked for precedence, so it is neccessary to include it here.
+            this.Weight = 0; // Weight is zero. Constant nodes don't have a precedence they should be operated on, but all nodes will be checked for precedence, so it is neccessary to include it here.
         }
 
         /// <summary>

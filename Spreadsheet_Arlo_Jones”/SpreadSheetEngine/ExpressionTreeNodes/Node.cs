@@ -16,30 +16,14 @@ namespace Cpts321.ExpressionTreeNodes
     public abstract class Node
     {
         /// <summary>
-        /// The priority node will be evaluated with.
-        /// </summary>
-        private int weight;
-
-        /// <summary>
         /// Gets or sets the value of weight.
         /// </summary>
-        internal int Weight
-        {
-            get
-            {
-                return this.weight;
-            }
-
-            set
-            {
-                this.weight = value;
-            }
-        }
+        internal int Weight { get; set; }
 
         /// <summary>
-        /// Will be overloaded to handle different elvaluation methods.
+        /// Will be overloaded to handle different evaluation methods.
         /// </summary>
-        /// <returns> A double representing the evaluted value of the node. </returns>
+        /// <returns> A double representing the evaluated value of the node. </returns>
         internal abstract double Evaluate();
     }
 }

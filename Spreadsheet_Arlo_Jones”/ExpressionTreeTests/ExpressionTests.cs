@@ -4,18 +4,19 @@
 
 namespace ExpressionTreeTests
 {
+    using System.Collections.Generic;
     using Cpts321;
     using NUnit.Framework;
 
     /// <summary>
-    /// Tests the functionality of ExpressionTree using the elvauation of different input expressions.
+    /// Tests the functionality of ExpressionTree using the evaluation of different input expressions.
     /// </summary>
     public class ExpressionTests
     {
         /// <summary>
         /// Creates an expression tree using the given expression, then evaluates the expression using the expression tree.
         /// </summary>
-        /// <param name="expresssion"> The math expression to be evaluated using the tree. </param>
+        /// <param name="expression"> The math expression to be evaluated using the tree. </param>
         /// <returns> The evaluated value of the expression. </returns>
         [TestCase("4+7-2", ExpectedResult = 9.0)]
         [TestCase("5-4-3+10", ExpectedResult = 8.0)]
@@ -29,9 +30,10 @@ namespace ExpressionTreeTests
         [TestCase("5/0", ExpectedResult = double.PositiveInfinity)]
         [TestCase("Test-2", ExpectedResult = -2.0)]
         [TestCase("0/5", ExpectedResult = 0.0)]
-        public double TestEvaluateCases(string expresssion)
+        public double TestEvaluateCases(string expression)
         {
-            ExpressionTree expressionTree = new ExpressionTree(expresssion);
+            var defaultDictionary = new Dictionary<string, double>();
+            var expressionTree = new ExpressionTree(expression, defaultDictionary);
             return expressionTree.Evaluate();
         }
     }

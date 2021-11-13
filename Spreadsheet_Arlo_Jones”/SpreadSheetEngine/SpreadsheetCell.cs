@@ -4,15 +4,9 @@
 
 namespace Cpts321
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
     /// <summary>
-    /// SpreadSheetCell inherits from the Cell class. It doesnt extend Cell class in anyway but creates
-    /// an unabstract version of the cell class that can be instantiated. It is an internal class meaning
+    /// SpreadSheetCell inherits from the Cell class. It doesn't extend Cell class in anyway but creates
+    /// an un abstract version of the cell class that can be instantiated. It is an internal class meaning
     /// that only things in Spreadsheet engine can create a instantiated SpreadSheetCell or set its
     /// it value, which is a property inherited from Cell that is also internal. However, things from outside
     /// of the library can still access the public properties and methods that SpreadSheetCell inherited from cell.

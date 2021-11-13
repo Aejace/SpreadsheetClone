@@ -7,10 +7,9 @@ namespace Cpts321
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Globalization;
     using System.Linq;
     using System.Runtime.CompilerServices;
-    using System.Text;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// Creates and manages a 2d array of cells.
@@ -18,29 +17,34 @@ namespace Cpts321
     public class SpreadSheet
     {
         /// <summary>
-        /// .
+        /// Dictionary containing the values of cells, accessible by name.
         /// </summary>
-        private Dictionary<string, double> cellNameandValueDictionary; // TODO: Might need to be internal
+        private readonly Dictionary<string, double> cellNameAndValueDictionary;
 
         /// <summary>
         /// A 2d array that contains cells.
         /// </summary>
-        private Cell[,] cellArray;
+        private readonly Cell[,] cellArray;
 
         /// <summary>
         /// Lists of cells that are dependent on cell indicated by array position.
         /// </summary>
-        private List<string>[,] listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition;
+        private readonly List<string>[,] listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition;
 
         /// <summary>
         /// The number of rows the spreadsheet has.
         /// </summary>
-        private int numberOfRows;
+        private readonly int numberOfRows;
 
         /// <summary>
         /// The number of columns the spreadsheet has.
         /// </summary>
-        private int numberOfColumns;
+        private readonly int numberOfColumns;
+
+        /// <summary>
+        /// An instantiation of UndoAndRedo class, allows spreadsheet to store cell data so it can undo and redo changes to those cells.
+        /// </summary>
+        private readonly UndoAndRedo undoRedo = new UndoAndRedo();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SpreadSheet"/> class.
@@ -53,23 +57,22 @@ namespace Cpts321
             this.numberOfColumns = numColumns;
             this.cellArray = new Cell[numRows, numColumns]; // Creates a new instance of a cellArray
             this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition = new List<string>[numRows, numColumns]; // Creates a new instance of listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition
-            for (int i = 0; i < numRows; ++i)
+            for (var i = 0; i < numRows; ++i)
             {
-                for (int j = 0; j < numColumns; ++j)
+                for (var j = 0; j < numColumns; ++j)
                 {
                     this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[i, j] = new List<string>();
                 }
             }
 
-            this.cellNameandValueDictionary = new Dictionary<string, double>();
+            this.cellNameAndValueDictionary = new Dictionary<string, double>();
 
-            for (int i = 0; i < this.numberOfRows; ++i)
+            for (var i = 0; i < this.numberOfRows; ++i)
             {
-                for (int j = 0; j < this.numberOfColumns; ++j)
+                for (var j = 0; j < this.numberOfColumns; ++j)
                 {
                     this.cellArray[i, j] = new SpreadSheetCell(i, j);
-                    this.cellArray[i, j].PropertyChanged += new PropertyChangedEventHandler(this.CellPropertyChangedEventHandler); // Subscribe to each SpreadSheetCell's property changed event
-                    string columnLetter = Convert.ToChar(i + 65).ToString();
+                    this.cellArray[i, j].PropertyChanged += this.CellPropertyChangedEventHandler; // Subscribe to each SpreadSheetCell's property changed event
                 }
             }
         }
@@ -98,9 +101,9 @@ namespace Cpts321
         /// <returns> The cell name Ex. "A23". </returns>
         public string GetCellName(int rowIndex, int columnIndex)
         {
-            string columnName = Convert.ToChar(columnIndex + 65).ToString();
-            string rowName = rowIndex.ToString();
-            return columnName += rowName;
+            var columnName = Convert.ToChar(columnIndex + 65).ToString();
+            var rowName = rowIndex.ToString();
+            return columnName + rowName;
         }
 
         /// <summary>
@@ -122,91 +125,209 @@ namespace Cpts321
         }
 
         /// <summary>
+        /// Sets the text of a specific cell in cell array.
+        /// </summary>
+        /// <param name="rowIndex"> The row index of a cell in cell array. </param>
+        /// <param name="columnIndex"> The column index of a cell in cell array. </param>
+        /// <param name="text"> New text value for the cell. </param>
+        public void SetCellText(int rowIndex, int columnIndex, string text)
+        {
+            var command = new CellTextCommand(this.cellArray[rowIndex, columnIndex], this.cellArray[rowIndex, columnIndex].Text);
+            var commandList = new List<ICommand> { command };
+            this.AddUndo(commandList);
+            this.cellArray[rowIndex, columnIndex].Text = text;
+        }
+
+        /// <summary>
+        /// Sets the color of a specific cell in cell array.
+        /// </summary>
+        /// <param name="rowIndexes"> List of row indexes of cells in cell array. </param>
+        /// <param name="columnIndexes"> List of column indexes of cells in cell array. </param>
+        /// <param name="color"> New color value for the cell. </param>
+        public void SetCellColor(List<int> rowIndexes, List<int> columnIndexes, uint color)
+        {
+            var commandList = new List<ICommand>();
+            for (var i = 0; i < rowIndexes.Count; ++i)
+            {
+                var command = new CellColorCommand(this.cellArray[rowIndexes[i], columnIndexes[i]], this.cellArray[rowIndexes[i], columnIndexes[i]].BGColor);
+                commandList.Add(command);
+                this.cellArray[rowIndexes[i], columnIndexes[i]].BGColor = color;
+            }
+
+            this.AddUndo(commandList);
+        }
+
+        /// <summary>
+        /// Adds a list of ICommands to undoRedo.
+        /// </summary>
+        /// <param name="commands"> List of ICommand objects to be added to undo stack. </param>
+        public void AddUndo(List<ICommand> commands)
+        {
+            this.undoRedo.AddUndo(commands);
+        }
+
+        /// <summary>
+        /// Undoes most recent change made to spreadsheet.
+        /// </summary>
+        public void Undo()
+        {
+            this.undoRedo.Undo();
+        }
+
+        /// <summary>
+        /// Redoes actions undone by Undo.
+        /// </summary>
+        public void Redo()
+        {
+            this.undoRedo.Redo();
+        }
+
+        /// <summary>
+        /// Gets count of items in undoStack in undoRedo.
+        /// </summary>
+        /// <returns> Count if items in undoStack in undoRedo. </returns>
+        public int GetUndoCount()
+        {
+            return this.undoRedo.UndoCount();
+        }
+
+        /// <summary>
+        /// Gets count of items in redoStack in undoRedo.
+        /// </summary>
+        /// <returns> Count if items in redoStack in undoRedo. </returns>
+        public int GetRedoCount()
+        {
+            return this.undoRedo.RedoCount();
+        }
+
+        /// <summary>
+        /// Gets a string indicating what undoing the top undo item will change.
+        /// </summary>
+        /// <returns> String indicating what undoing the top undo item will change. </returns>
+        public string GetTopUndoString()
+        {
+            return this.undoRedo.GetUndoCommandUIString();
+        }
+
+        /// <summary>
+        /// Gets a string indicating what redoing the top redo item will change.
+        /// </summary>
+        /// <returns> String indicating what redoing the top redo item will change. </returns>
+        public string GetTopRedoString()
+        {
+            return this.undoRedo.GetRedoCommandUIString();
+        }
+
+        /// <summary>
         /// Event handler sets the value of a cell when the text property of the cell has changed.
         /// </summary>
         /// <param name="sender"> Contains a reference to the object that triggered the event. </param>
         /// <param name="e"> Contains information about the triggering event. </param>
         private void CellPropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
         {
-            Cell cellWhosePropertyChanged = sender as Cell; // the cell whose property changed is the sender of the event.
-            if (e.PropertyName == "Text")
-            { // If the property that changed was the text property.
-                if (cellWhosePropertyChanged.Text.StartsWith("="))
-                { // If the text is an expression
-                    // Remove old subscriptions, requires iterating through the double array of cells to find any instance where the cell whose property changed is subscribed to the value change of another cell.
-                    string cellWhosePropertyChangedName = this.GetCellName(cellWhosePropertyChanged.RowIndexNumber, cellWhosePropertyChanged.ColumnIndexNumber);
-                    for (int i = 0; i < this.numberOfRows; ++i)
+            var cellWhosePropertyChanged = sender as Cell; // the cell whose property changed is the sender of the event.
+            switch (e.PropertyName)
+            {
+                case "Text":
                     {
-                        for (int j = 0; j < this.numberOfColumns; ++j)
+                        // If the property that changed was the text property.
+                        if (cellWhosePropertyChanged != null && cellWhosePropertyChanged.Text.StartsWith("="))
+                        { // If the text is an expression
+                          // Remove old subscriptions, requires iterating through the double array of cells to find any instance where the cell whose property changed is subscribed to the value change of another cell.
+                            var cellWhosePropertyChangedName = this.GetCellName(cellWhosePropertyChanged.RowIndexNumber, cellWhosePropertyChanged.ColumnIndexNumber);
+                            for (var i = 0; i < this.numberOfRows; ++i)
+                            {
+                                for (var j = 0; j < this.numberOfColumns; ++j)
+                                {
+                                    if (this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[i, j].Contains(cellWhosePropertyChangedName))
+                                    { // If cell name is found in list of subscribers, remove it.
+                                        this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[i, j].Remove(cellWhosePropertyChangedName);
+                                    }
+                                }
+                            }
+
+                            // Evaluate text
+                            cellWhosePropertyChanged.Value = this.Evaluate(cellWhosePropertyChanged, this.cellNameAndValueDictionary);
+                        }
+                        else
                         {
-                            if (this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[i, j].Contains(cellWhosePropertyChangedName))
-                            { // If cell name is found in list of subscribers, remove it.
-                                this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[i, j].Remove(cellWhosePropertyChangedName);
+                            // Text is not an expression, set value equal to text.
+                            if (cellWhosePropertyChanged != null)
+                            {
+                                cellWhosePropertyChanged.Value = cellWhosePropertyChanged.Text;
                             }
                         }
+
+                        this.NotifyPropertyChanged(cellWhosePropertyChanged, "Value"); // Notify subscribers (UI)
+                        break;
                     }
 
-                    // Evaluate text
-                    cellWhosePropertyChanged.Value = this.Evaluate(cellWhosePropertyChanged, this.cellNameandValueDictionary);
-                }
-                else
-                { // Text is not an expression, set value equal to text.
-                    cellWhosePropertyChanged.Value = cellWhosePropertyChanged.Text;
-                }
-            }
-            else if (e.PropertyName == "Value")
-            { // If the property that changed was the cell's value.
-                string cellWhosePropertyChangedName = this.GetCellName(cellWhosePropertyChanged.RowIndexNumber, cellWhosePropertyChanged.ColumnIndexNumber);
-                if (double.TryParse(cellWhosePropertyChanged.Value, out double cellValue))
-                {
-                    this.cellNameandValueDictionary[cellWhosePropertyChangedName] = cellValue;
-                }
-                else
-                {
-                    this.cellNameandValueDictionary[cellWhosePropertyChangedName] = 0;
-                }
-
-                // Evaluate every cell that is subscribed to the cell that's value was changed.
-                int listCount = this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[cellWhosePropertyChanged.RowIndexNumber, cellWhosePropertyChanged.ColumnIndexNumber].Count;
-                for (int i = 0; i < listCount; ++i)
-                {
-                    string cellName = this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[cellWhosePropertyChanged.RowIndexNumber, cellWhosePropertyChanged.ColumnIndexNumber][i];
-
-                    // Convert name of cell into row and column values.
-                    int columnIndex = cellName[0] - 65;
-                    string rowIndex = string.Empty;
-                    for (int j = 1; j < cellName.Count(); ++j)
+                case "Value":
                     {
-                        rowIndex += cellName[j];
+                        // If the property that changed was the cell's value.
+                        if (cellWhosePropertyChanged != null)
+                        {
+                            var cellWhosePropertyChangedName = this.GetCellName(cellWhosePropertyChanged.RowIndexNumber, cellWhosePropertyChanged.ColumnIndexNumber);
+                            if (double.TryParse(cellWhosePropertyChanged.Value, out var cellValue))
+                            {
+                                this.cellNameAndValueDictionary[cellWhosePropertyChangedName] = cellValue;
+                            }
+                            else
+                            {
+                                this.cellNameAndValueDictionary[cellWhosePropertyChangedName] = 0;
+                            }
+                        }
+
+                        // Evaluate every cell that is subscribed to the cell that's value was changed.
+                        if (cellWhosePropertyChanged != null)
+                        {
+                            var listCount = this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[cellWhosePropertyChanged.RowIndexNumber, cellWhosePropertyChanged.ColumnIndexNumber].Count;
+                            for (var i = 0; i < listCount; ++i)
+                            {
+                                var cellName = this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[cellWhosePropertyChanged.RowIndexNumber, cellWhosePropertyChanged.ColumnIndexNumber][i];
+
+                                // Convert name of cell into row and column values.
+                                var columnIndex = cellName[0] - 65;
+                                var rowIndex = string.Empty;
+                                for (var j = 1; j < cellName.Count(); ++j)
+                                {
+                                    rowIndex += cellName[j];
+                                }
+
+                                // Evaluate the cells text and update it's value.
+                                this.cellArray[int.Parse(rowIndex), columnIndex].Value = this.Evaluate(this.GetCellByRowAndColumn(int.Parse(rowIndex), columnIndex), this.cellNameAndValueDictionary);
+                            }
+                        }
+
+                        this.NotifyPropertyChanged(cellWhosePropertyChanged, "Value"); // Notify subscribers (UI)
+                        break;
                     }
 
-                    // Evaluate the cells text and update it's value.
-                    this.cellArray[int.Parse(rowIndex), columnIndex].Value = this.Evaluate(this.GetCellByRowAndColumn(int.Parse(rowIndex), columnIndex), this.cellNameandValueDictionary);
-                }
+                case "Color":
+                    this.NotifyPropertyChanged(cellWhosePropertyChanged, "Color"); // Notify subscribers (UI)
+                    break;
             }
-
-            this.NotifyPropertyChanged(cellWhosePropertyChanged, cellWhosePropertyChanged.Value); // Notify subscribers (UI)
         }
 
         /// <summary>
         /// Evaluates a cell to find it's value.
         /// </summary>
-        /// <param name="cellThatsBeingEvaluated"> The cell thats being evaluated. </param>
+        /// <param name="cellThatIsBeingEvaluated"> The cell that's being evaluated. </param>
         /// <param name="cellValuesByName"> Dictionary of cell name keys and value value pairs. </param>
         /// <returns> Returns the value of a cell's text expression. </returns>
-        private string Evaluate(Cell cellThatsBeingEvaluated, Dictionary<string, double> cellValuesByName)
+        private string Evaluate(Cell cellThatIsBeingEvaluated, Dictionary<string, double> cellValuesByName)
         {
-            string cellName = this.GetCellName(cellThatsBeingEvaluated.RowIndexNumber, cellThatsBeingEvaluated.ColumnIndexNumber);
-            ExpressionTree expressionTree = new ExpressionTree(cellThatsBeingEvaluated.Text.Substring(1), cellValuesByName);
-            List<string> cellsReferencedInExpression = expressionTree.GetVariables();
+            var cellName = this.GetCellName(cellThatIsBeingEvaluated.RowIndexNumber, cellThatIsBeingEvaluated.ColumnIndexNumber);
+            var expressionTree = new ExpressionTree(cellThatIsBeingEvaluated.Text.Substring(1), cellValuesByName);
+            var cellsReferencedInExpression = expressionTree.GetVariables();
 
             // Subscribe to property changes in all cells the cell that is being evaluated is dependent on.
-            foreach (string variableCell in cellsReferencedInExpression)
+            foreach (var variableCell in cellsReferencedInExpression)
             {
                 // Convert name of cell into row and column values.
-                int columnIndex = variableCell[0] - 65;
-                string rowIndex = string.Empty;
-                for (int j = 1; j < variableCell.Count(); ++j)
+                var columnIndex = variableCell[0] - 65;
+                var rowIndex = string.Empty;
+                for (var j = 1; j < variableCell.Count(); ++j)
                 {
                     rowIndex += variableCell[j];
                 }
@@ -216,7 +337,7 @@ namespace Cpts321
 
             try
             {
-                return expressionTree.Evaluate().ToString();
+                return expressionTree.Evaluate().ToString(CultureInfo.InvariantCulture);
             }
             catch (KeyNotFoundException)
             {
