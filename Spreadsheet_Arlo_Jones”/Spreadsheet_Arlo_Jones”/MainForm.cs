@@ -121,7 +121,7 @@ namespace Spreadsheet_Arlo_Jones_
 
             for (var i = 0; i < this.mainSpreadSheet.RowCount(); ++i)
             {
-                this.mainSpreadSheet.GetCellByRowAndColumn(i, 0).Text = "=B" + i.ToString();
+                this.mainSpreadSheet.GetCellByRowAndColumn(i, 0).Text = "=B" + i;
             }
         }
 

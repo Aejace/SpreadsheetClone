@@ -2,6 +2,11 @@
 // Copyright (c) { Aejace studios }. All rights reserved.
 // </copyright>
 
+using System.CodeDom;
+using System.IO;
+using System.Xml;
+using System.Xml.Linq;
+
 namespace Cpts321
 {
     using System;
@@ -216,6 +221,54 @@ namespace Cpts321
         public string GetTopRedoString()
         {
             return this.undoRedo.GetRedoCommandUIString();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name=""></param>
+        public void SaveSpreadSheet(Stream stream)
+        {
+            var writer = XmlWriter.Create(stream);
+            writer.WriteStartDocument();
+            writer.WriteStartElement("Spreadsheet");
+
+            foreach (var cell in this.cellArray)
+            {
+                if (cell.Text == string.Empty && cell.BGColor == uint.MaxValue)
+                {
+                    continue;
+                }
+
+                writer.WriteStartElement("Cell");
+                writer.WriteAttributeString("Row Index", cell.RowIndexNumber.ToString());
+                writer.WriteAttributeString("Column Index", cell.ColumnIndexNumber.ToString());
+                writer.WriteAttributeString("Cell Text", cell.Text);
+                writer.WriteAttributeString("Cell Background Color", cell.BGColor.ToString());
+                writer.WriteEndElement();
+            }
+
+            writer.WriteEndElement();
+            writer.WriteEndDocument();
+            writer.Close();
+        }
+
+        public void LoadSpreadSheet(Stream stream)
+        {
+            var spreadSheetDocument = new XmlDocument();
+            spreadSheetDocument.Load(stream);
+
+            foreach (XmlNode node in spreadSheetDocument.DocumentElement.ChildNodes)
+            {
+                var rowIndex = int.Parse(node.Attributes.GetNamedItem("Row Index").Value);
+                var columnIndex = int.Parse(node.Attributes.GetNamedItem("Column Index").Value);
+                var cellText = node.Attributes.GetNamedItem("Cell Text").Value;
+                var cellColor = uint.Parse(node.Attributes.GetNamedItem("Cell Background Color").Value);
+
+                var cell = this.cellArray[rowIndex, columnIndex];
+                cell.Text = cellText;
+                cell.BGColor = cellColor;
+            }
         }
 
         /// <summary>
