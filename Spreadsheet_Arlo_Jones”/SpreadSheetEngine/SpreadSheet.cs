@@ -241,10 +241,10 @@ namespace Cpts321
                 }
 
                 writer.WriteStartElement("Cell");
-                writer.WriteAttributeString("Row Index", cell.RowIndexNumber.ToString());
-                writer.WriteAttributeString("Column Index", cell.ColumnIndexNumber.ToString());
-                writer.WriteAttributeString("Cell Text", cell.Text);
-                writer.WriteAttributeString("Cell Background Color", cell.BGColor.ToString());
+                writer.WriteAttributeString("RowIndex", cell.RowIndexNumber.ToString());
+                writer.WriteAttributeString("ColumnIndex", cell.ColumnIndexNumber.ToString());
+                writer.WriteAttributeString("CellText", cell.Text);
+                writer.WriteAttributeString("CellBackgroundColor", cell.BGColor.ToString());
                 writer.WriteEndElement();
             }
 

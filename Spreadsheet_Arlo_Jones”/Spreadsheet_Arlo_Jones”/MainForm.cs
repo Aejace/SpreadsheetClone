@@ -2,12 +2,15 @@
 // Copyright (c) { Aejace studios }. All rights reserved.
 // </copyright>
 
+using System.Xml;
+
 namespace Spreadsheet_Arlo_Jones_
 {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing;
+    using System.IO;
     using System.Windows.Forms;
     using Cpts321;
 
@@ -74,7 +77,8 @@ namespace Spreadsheet_Arlo_Jones_
                     this.MainDataGridView.Rows[rowName].Cells[columnName].Value = cellWhosePropertyChanged.Value;
                     break;
                 case "Color":
-                    this.MainDataGridView.Rows[rowName].Cells[columnName].Style.BackColor = Color.FromArgb((int)cellWhosePropertyChanged.BGColor);
+                    this.MainDataGridView.Rows[rowName].Cells[columnName].Style.BackColor =
+                        Color.FromArgb((int) cellWhosePropertyChanged.BGColor);
                     break;
             }
         }
@@ -147,7 +151,7 @@ namespace Spreadsheet_Arlo_Jones_
                 columnIndexes.Add(cell.ColumnIndex);
             }
 
-            this.mainSpreadSheet.SetCellColor(rowIndexes, columnIndexes, (uint)colorDialog.Color.ToArgb());
+            this.mainSpreadSheet.SetCellColor(rowIndexes, columnIndexes, (uint) colorDialog.Color.ToArgb());
         }
 
         /// <summary>
@@ -195,6 +199,26 @@ namespace Spreadsheet_Arlo_Jones_
             {
                 this.redoToolStripMenuItem.Enabled = true;
                 this.redoToolStripMenuItem.Text = "Redo " + this.mainSpreadSheet.GetTopRedoString();
+            }
+        }
+
+        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "XML File | *.xml"; // Specifies the file type to be created.
+
+            if (saveFileDialog.ShowDialog() != DialogResult.OK || saveFileDialog.FileName == string.Empty)
+            {
+                return;
+            }
+
+            var fileName = saveFileDialog.FileName;
+
+            // Creates a stream writer to write text into the designated file.
+            using (var sw = new FileStream(fileName, FileMode.Create))
+            {
+                this.mainSpreadSheet.SaveSpreadSheet(sw);
+                sw.Close();
             }
         }
     }
