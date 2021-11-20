@@ -22,7 +22,7 @@ namespace Spreadsheet_Arlo_Jones_
         /// <summary>
         /// SpreadSheet.
         /// </summary>
-        private readonly SpreadSheet mainSpreadSheet;
+        private SpreadSheet mainSpreadSheet;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainForm"/> class.
@@ -78,7 +78,7 @@ namespace Spreadsheet_Arlo_Jones_
                     break;
                 case "Color":
                     this.MainDataGridView.Rows[rowName].Cells[columnName].Style.BackColor =
-                        Color.FromArgb((int) cellWhosePropertyChanged.BGColor);
+                        Color.FromArgb((int)cellWhosePropertyChanged.BGColor);
                     break;
             }
         }
@@ -151,7 +151,7 @@ namespace Spreadsheet_Arlo_Jones_
                 columnIndexes.Add(cell.ColumnIndex);
             }
 
-            this.mainSpreadSheet.SetCellColor(rowIndexes, columnIndexes, (uint) colorDialog.Color.ToArgb());
+            this.mainSpreadSheet.SetCellColor(rowIndexes, columnIndexes, (uint)colorDialog.Color.ToArgb());
         }
 
         /// <summary>
@@ -202,6 +202,11 @@ namespace Spreadsheet_Arlo_Jones_
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var saveFileDialog = new SaveFileDialog();
@@ -220,6 +225,50 @@ namespace Spreadsheet_Arlo_Jones_
                 this.mainSpreadSheet.SaveSpreadSheet(sw);
                 sw.Close();
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "XML File | *.xml";
+
+            if (openFileDialog.ShowDialog() != DialogResult.OK || openFileDialog.FileName == string.Empty)
+            {
+                return;
+            }
+
+            this.ClearForm();
+
+            var fileName = openFileDialog.FileName;
+            this.mainSpreadSheet = new SpreadSheet(50, 26);
+            this.mainSpreadSheet.CellPropertyChanged += this.SpreadSheetChangedEventHandler;
+
+            // Creates a stream writer to write text into the designated file.
+            using (var sr = new FileStream(fileName, FileMode.Open))
+            {
+                this.mainSpreadSheet.LoadSpreadSheet(sr);
+                sr.Close();
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void ClearForm()
+        {
+            this.MainDataGridView.SelectAll();
+            foreach (DataGridViewCell cell in this.MainDataGridView.SelectedCells)
+            {
+                cell.Value = string.Empty;
+                cell.Style.BackColor = Color.White;
+            }
+
+            this.MainDataGridView.ClearSelection();
         }
     }
 }

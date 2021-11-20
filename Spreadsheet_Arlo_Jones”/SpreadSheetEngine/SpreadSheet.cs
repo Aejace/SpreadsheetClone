@@ -260,10 +260,10 @@ namespace Cpts321
 
             foreach (XmlNode node in spreadSheetDocument.DocumentElement.ChildNodes)
             {
-                var rowIndex = int.Parse(node.Attributes.GetNamedItem("Row Index").Value);
-                var columnIndex = int.Parse(node.Attributes.GetNamedItem("Column Index").Value);
-                var cellText = node.Attributes.GetNamedItem("Cell Text").Value;
-                var cellColor = uint.Parse(node.Attributes.GetNamedItem("Cell Background Color").Value);
+                var rowIndex = int.Parse(node.Attributes.GetNamedItem("RowIndex").Value);
+                var columnIndex = int.Parse(node.Attributes.GetNamedItem("ColumnIndex").Value);
+                var cellText = node.Attributes.GetNamedItem("CellText").Value;
+                var cellColor = uint.Parse(node.Attributes.GetNamedItem("CellBackgroundColor").Value);
 
                 var cell = this.cellArray[rowIndex, columnIndex];
                 cell.Text = cellText;
