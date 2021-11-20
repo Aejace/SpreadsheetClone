@@ -8,6 +8,7 @@ namespace Spreadsheet_Arlo_Jones_
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing;
+    using System.IO;
     using System.Windows.Forms;
     using Cpts321;
 
@@ -19,7 +20,7 @@ namespace Spreadsheet_Arlo_Jones_
         /// <summary>
         /// SpreadSheet.
         /// </summary>
-        private readonly SpreadSheet mainSpreadSheet;
+        private SpreadSheet mainSpreadSheet;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainForm"/> class.
@@ -74,7 +75,8 @@ namespace Spreadsheet_Arlo_Jones_
                     this.MainDataGridView.Rows[rowName].Cells[columnName].Value = cellWhosePropertyChanged.Value;
                     break;
                 case "Color":
-                    this.MainDataGridView.Rows[rowName].Cells[columnName].Style.BackColor = Color.FromArgb((int)cellWhosePropertyChanged.BGColor);
+                    this.MainDataGridView.Rows[rowName].Cells[columnName].Style.BackColor =
+                        Color.FromArgb((int)cellWhosePropertyChanged.BGColor);
                     break;
             }
         }
@@ -121,7 +123,7 @@ namespace Spreadsheet_Arlo_Jones_
 
             for (var i = 0; i < this.mainSpreadSheet.RowCount(); ++i)
             {
-                this.mainSpreadSheet.GetCellByRowAndColumn(i, 0).Text = "=B" + i.ToString();
+                this.mainSpreadSheet.GetCellByRowAndColumn(i, 0).Text = "=B" + i;
             }
         }
 
@@ -196,6 +198,75 @@ namespace Spreadsheet_Arlo_Jones_
                 this.redoToolStripMenuItem.Enabled = true;
                 this.redoToolStripMenuItem.Text = "Redo " + this.mainSpreadSheet.GetTopRedoString();
             }
+        }
+
+        /// <summary>
+        /// Saves the spreadsheet as an xml document.
+        /// </summary>
+        /// <param name="sender"> The save button that was clicked. </param>
+        /// <param name="e"> Information about event. </param>
+        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "XML File | *.xml"; // Specifies the file type to be created.
+
+            if (saveFileDialog.ShowDialog() != DialogResult.OK || saveFileDialog.FileName == string.Empty)
+            {
+                return;
+            }
+
+            var fileName = saveFileDialog.FileName;
+
+            // Creates a stream writer to write text into the designated file.
+            using (var sw = new FileStream(fileName, FileMode.Create))
+            {
+                this.mainSpreadSheet.SaveSpreadSheet(sw);
+                sw.Close();
+            }
+        }
+
+        /// <summary>
+        /// Loads a saved spreadsheet from an xml document.
+        /// </summary>
+        /// <param name="sender"> The load button that was clicked. </param>
+        /// <param name="e"> Information about event. </param>
+        private void LoadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "XML File | *.xml";
+
+            if (openFileDialog.ShowDialog() != DialogResult.OK || openFileDialog.FileName == string.Empty)
+            {
+                return;
+            }
+
+            this.ClearForm();
+
+            var fileName = openFileDialog.FileName;
+            this.mainSpreadSheet = new SpreadSheet(50, 26);
+            this.mainSpreadSheet.CellPropertyChanged += this.SpreadSheetChangedEventHandler;
+
+            // Creates a stream writer to write text into the designated file.
+            using (var sr = new FileStream(fileName, FileMode.Open))
+            {
+                this.mainSpreadSheet.LoadSpreadSheet(sr);
+                sr.Close();
+            }
+        }
+
+        /// <summary>
+        /// Clears the UI, used to make sure information from different spreadsheets don't overlap.
+        /// </summary>
+        private void ClearForm()
+        {
+            this.MainDataGridView.SelectAll();
+            foreach (DataGridViewCell cell in this.MainDataGridView.SelectedCells)
+            {
+                cell.Value = string.Empty;
+                cell.Style.BackColor = Color.White;
+            }
+
+            this.MainDataGridView.ClearSelection();
         }
     }
 }

@@ -8,8 +8,10 @@ namespace Cpts321
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Globalization;
+    using System.IO;
     using System.Linq;
     using System.Runtime.CompilerServices;
+    using System.Xml;
 
     /// <summary>
     /// Creates and manages a 2d array of cells.
@@ -216,6 +218,62 @@ namespace Cpts321
         public string GetTopRedoString()
         {
             return this.undoRedo.GetRedoCommandUIString();
+        }
+
+        /// <summary>
+        /// Saves the spreadsheet as an xml document.
+        /// </summary>
+        /// <param name="stream"> The File stream that will save the spreadsheet. Contains the location of the file in memory. </param>
+        public void SaveSpreadSheet(Stream stream)
+        {
+            var writer = XmlWriter.Create(stream);
+            writer.WriteStartDocument();
+            writer.WriteStartElement("Spreadsheet");
+
+            foreach (var cell in this.cellArray)
+            {
+                // If a given cell has not been edited
+                if (cell.Text == string.Empty && cell.BGColor == uint.MaxValue)
+                {
+                    continue; // Skip saving it.
+                }
+
+                // Save cell as a series of attributes that will allow the cell to be reconstructed.
+                writer.WriteStartElement("Cell");
+                writer.WriteAttributeString("RowIndex", cell.RowIndexNumber.ToString());
+                writer.WriteAttributeString("ColumnIndex", cell.ColumnIndexNumber.ToString());
+                writer.WriteAttributeString("CellText", cell.Text);
+                writer.WriteAttributeString("CellBackgroundColor", cell.BGColor.ToString());
+                writer.WriteEndElement();
+            }
+
+            writer.WriteEndElement();
+            writer.WriteEndDocument();
+            writer.Close();
+        }
+
+        /// <summary>
+        /// Loads a saved spreadsheet from an xml document.
+        /// </summary>
+        /// <param name="stream"> File stream used to load the spreadsheet from a file. </param>
+        public void LoadSpreadSheet(Stream stream)
+        {
+            var spreadSheetDocument = new XmlDocument();
+            spreadSheetDocument.Load(stream);
+
+            foreach (XmlNode node in spreadSheetDocument.DocumentElement.ChildNodes)
+            {
+                // Get all relevant cell properties
+                var rowIndex = int.Parse(node.Attributes.GetNamedItem("RowIndex").Value);
+                var columnIndex = int.Parse(node.Attributes.GetNamedItem("ColumnIndex").Value);
+                var cellText = node.Attributes.GetNamedItem("CellText").Value;
+                var cellColor = uint.Parse(node.Attributes.GetNamedItem("CellBackgroundColor").Value);
+
+                // Update edited cell with appropriate new values.
+                var cell = this.cellArray[rowIndex, columnIndex];
+                cell.Text = cellText;
+                cell.BGColor = cellColor;
+            }
         }
 
         /// <summary>
