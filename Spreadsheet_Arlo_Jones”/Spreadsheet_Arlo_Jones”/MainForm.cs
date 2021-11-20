@@ -2,8 +2,6 @@
 // Copyright (c) { Aejace studios }. All rights reserved.
 // </copyright>
 
-using System.Xml;
-
 namespace Spreadsheet_Arlo_Jones_
 {
     using System;
@@ -203,10 +201,10 @@ namespace Spreadsheet_Arlo_Jones_
         }
 
         /// <summary>
-        /// 
+        /// Saves the spreadsheet as an xml document.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender"> The save button that was clicked. </param>
+        /// <param name="e"> Information about event. </param>
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var saveFileDialog = new SaveFileDialog();
@@ -228,11 +226,11 @@ namespace Spreadsheet_Arlo_Jones_
         }
 
         /// <summary>
-        /// 
+        /// Loads a saved spreadsheet from an xml document.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        /// <param name="sender"> The load button that was clicked. </param>
+        /// <param name="e"> Information about event. </param>
+        private void LoadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "XML File | *.xml";
@@ -257,7 +255,7 @@ namespace Spreadsheet_Arlo_Jones_
         }
 
         /// <summary>
-        /// 
+        /// Clears the UI, used to make sure information from different spreadsheets don't overlap.
         /// </summary>
         private void ClearForm()
         {
