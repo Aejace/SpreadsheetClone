@@ -416,6 +416,14 @@ namespace Cpts321
                 return "Bad reference";
             }
 
+            // Check for self references
+            if (cellsReferencedInExpression.Any(referencedCellName => this.GetCellByName(referencedCellName) == cellThatIsBeingEvaluated))
+            {
+                return "Self reference";
+            }
+
+
+
             // Subscribe to property changes in all cells the cell that is being evaluated is dependent on.
             foreach (var variableCell in cellsReferencedInExpression)
             {
