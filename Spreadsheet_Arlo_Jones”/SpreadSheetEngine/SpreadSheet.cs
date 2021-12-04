@@ -416,16 +416,6 @@ namespace Cpts321
                 return "Bad reference";
             }
 
-            if (cellsReferencedInExpression.Any(referencedCellName => this.GetCellByName(referencedCellName) == cellThatIsBeingEvaluated))
-            {
-                return "Self reference";
-            }
-
-            if (this.CheckCircularReference(cellThatIsBeingEvaluated, cellsReferencedInExpression))
-            {
-                return "Circular reference";
-            }
-
             // Subscribe to property changes in all cells the cell that is being evaluated is dependent on.
             foreach (var variableCell in cellsReferencedInExpression)
             {
@@ -448,30 +438,6 @@ namespace Cpts321
             {
                 return "0";
             }
-        }
-
-        /// <summary>
-        /// Checks whether a given expression creates a circular reference in the spreadsheet.
-        /// </summary>
-        /// <param name="cellToCheck"> Current cell being checked. </param>
-        /// <param name="cellsUsedInExpression"> Cell names used as variable in the expression of the cell that was updated. </param>
-        /// <returns> A bool, indicating whether this expression would create circular references or not. </returns>
-        private bool CheckCircularReference(Cell cellToCheck, IReadOnlyCollection<string> cellsUsedInExpression)
-        {
-            foreach (var cellName in this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[cellToCheck.RowIndexNumber, cellToCheck.ColumnIndexNumber])
-            {
-                if (cellsUsedInExpression.Any(cell => cell == cellName))
-                {
-                    return true;
-                }
-
-                if (this.CheckCircularReference(this.GetCellByName(cellName), cellsUsedInExpression))
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         /// <summary>
