@@ -100,7 +100,7 @@ namespace Spreadsheet_Arlo_Jones_
         private void MainDataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             var cellWhoseTextChanged = this.MainDataGridView.CurrentCell;
-            this.mainSpreadSheet.SetCellText(e.RowIndex, e.ColumnIndex, cellWhoseTextChanged.Value.ToString());
+            this.mainSpreadSheet.SetCellText(e.RowIndex, e.ColumnIndex, cellWhoseTextChanged.Value != null ? cellWhoseTextChanged.Value.ToString() : string.Empty);
         }
 
         /// <summary>
