@@ -2,6 +2,8 @@
 // Copyright (c) { Aejace studios }. All rights reserved.
 // </copyright>
 
+using NUnit.Framework.Internal;
+
 namespace ExpressionTreeTests
 {
     using System.Collections.Generic;
@@ -32,7 +34,10 @@ namespace ExpressionTreeTests
         [TestCase("0/5", ExpectedResult = 0.0)]
         public double TestEvaluateCases(string expression)
         {
-            var defaultDictionary = new Dictionary<string, double>();
+            var defaultDictionary = new Dictionary<string, double>
+            {
+                { "Test", 0 },
+            };
             var expressionTree = new ExpressionTree(expression, defaultDictionary);
             return expressionTree.Evaluate();
         }

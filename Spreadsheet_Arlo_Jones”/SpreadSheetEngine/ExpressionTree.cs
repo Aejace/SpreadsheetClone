@@ -83,6 +83,11 @@ namespace Cpts321
         /// <returns> The value of the expression in the expression tree. </returns>
         public double Evaluate()
         {
+            if (this.root == null)
+            {
+                return 0;
+            }
+
             return this.root.Evaluate();
         }
 
@@ -127,6 +132,11 @@ namespace Cpts321
         /// <returns> The node the is the root of the expression tree built. </returns>
         private Node BuildTree(string expression)
         {
+            if (expression == null)
+            {
+                return null;
+            }
+
             var nodeFactory = new NodeFactory(this.variableDictionary, this.operatorDictionary); // Initialize node factory, with operator dictionary and variable dictionary
             var nodeList = new List<Node>(); // Initializes list of nodes that will be converted into an expression tree.
             var operatorCharactersList = this.operatorDictionary.Keys.ToList(); // Creates list of operator characters using operator dictionary

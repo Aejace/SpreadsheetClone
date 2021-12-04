@@ -96,6 +96,27 @@ namespace Cpts321
         }
 
         /// <summary>
+        /// Gets cell indicated by name given.
+        /// </summary>
+        /// <param name="name"> the name of a desired cell. Ex. "A23". </param>
+        /// <returns> The cell indicated by the parameter name. </returns>
+        public Cell GetCellByName(string name)
+        {
+            var cellColumn = name[0] - 65;
+            if (!int.TryParse(name.Substring(1), out var cellRow))
+            {
+                return null;
+            }
+
+            if ((cellColumn >= 0 && cellColumn < this.numberOfColumns) && (cellRow >= 0 && cellRow < this.numberOfRows))
+            {
+                return this.GetCellByRowAndColumn(cellRow, cellColumn);
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Returns a cell name given it's row and column indexes.
         /// </summary>
         /// <param name="rowIndex"> The row index of the cell. </param>
@@ -261,9 +282,19 @@ namespace Cpts321
             var spreadSheetDocument = new XmlDocument();
             spreadSheetDocument.Load(stream);
 
+            if (spreadSheetDocument.DocumentElement == null)
+            {
+                return;
+            }
+
             foreach (XmlNode node in spreadSheetDocument.DocumentElement.ChildNodes)
             {
                 // Get all relevant cell properties
+                if (node.Attributes == null)
+                {
+                    continue;
+                }
+
                 var rowIndex = int.Parse(node.Attributes.GetNamedItem("RowIndex").Value);
                 var columnIndex = int.Parse(node.Attributes.GetNamedItem("ColumnIndex").Value);
                 var cellText = node.Attributes.GetNamedItem("CellText").Value;
@@ -289,7 +320,7 @@ namespace Cpts321
                 case "Text":
                     {
                         // If the property that changed was the text property.
-                        if (cellWhosePropertyChanged != null && cellWhosePropertyChanged.Text.StartsWith("="))
+                        if (cellWhosePropertyChanged != null && cellWhosePropertyChanged.Text.StartsWith("=") && cellWhosePropertyChanged.Text.Length > 1)
                         { // If the text is an expression
                           // Remove old subscriptions, requires iterating through the double array of cells to find any instance where the cell whose property changed is subscribed to the value change of another cell.
                             var cellWhosePropertyChangedName = this.GetCellName(cellWhosePropertyChanged.RowIndexNumber, cellWhosePropertyChanged.ColumnIndexNumber);
@@ -379,6 +410,24 @@ namespace Cpts321
             var expressionTree = new ExpressionTree(cellThatIsBeingEvaluated.Text.Substring(1), cellValuesByName);
             var cellsReferencedInExpression = expressionTree.GetVariables();
 
+            // Check for out of bounds references, and variables that don't reference a cell properly
+            if (cellsReferencedInExpression.Any(referencedCellName => this.GetCellByName(referencedCellName) == null))
+            {
+                return "Bad reference";
+            }
+
+            // Check for self references
+            if (cellsReferencedInExpression.Any(referencedCellName => this.GetCellByName(referencedCellName) == cellThatIsBeingEvaluated))
+            {
+                return "Self reference";
+            }
+
+            // Check for circular reference
+            if (this.CheckCircularReference(cellThatIsBeingEvaluated, cellsReferencedInExpression))
+            {
+                return "Circular reference";
+            }
+
             // Subscribe to property changes in all cells the cell that is being evaluated is dependent on.
             foreach (var variableCell in cellsReferencedInExpression)
             {
@@ -399,8 +448,32 @@ namespace Cpts321
             }
             catch (KeyNotFoundException)
             {
-                return "Invalid Expression";
+                return "0";
             }
+        }
+
+        /// <summary>
+        /// Checks whether a given expression creates a circular reference in the spreadsheet.
+        /// </summary>
+        /// <param name="cellToCheck"> Current cell being checked. </param>
+        /// <param name="cellsUsedInExpression"> Cell names used as variable in the expression of the cell that was updated. </param>
+        /// <returns> A bool, indicating whether this expression would create circular references or not. </returns>
+        private bool CheckCircularReference(Cell cellToCheck, IReadOnlyCollection<string> cellsUsedInExpression)
+        {
+            foreach (var cellName in this.listsOfCellsThatAreDependentOnCellIndicatedByArrayPosition[cellToCheck.RowIndexNumber, cellToCheck.ColumnIndexNumber])
+            {
+                if (cellsUsedInExpression.Any(cell => cell == cellName))
+                {
+                    return true;
+                }
+
+                if (this.CheckCircularReference(this.GetCellByName(cellName), cellsUsedInExpression))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
